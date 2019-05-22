@@ -16,7 +16,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: acr_my (exe)
+// Target: acr_my (exe) -- ACR <-> MariaDB adaptor
 // Exceptions: yes
 // Source: cpp/acr/acr_my.cpp
 //
@@ -37,7 +37,8 @@ static void Main_Start() {
     CreateDirRecurse(acr_my::_db.data_dir);
 
     tempstr cmd;
-    cmd << Subst(acr_my::_db.R, "/usr/bin/mysqld_safe"
+    // assume mysqld_safe is in the path
+    cmd << Subst(acr_my::_db.R, "mysqld_safe"
                  " --no-defaults"
                  " --socket=$data_dir/mysql.sock"
                  " --pid-file=$data_dir/mysql_pid"
@@ -51,34 +52,32 @@ static void Main_Start() {
     // In RH7, we use mariadb which requires innodb to be enabled.
     struct utsname my_uname;
     uname(&my_uname);
-    if (strstr(my_uname.release, "el7.x86_64") == NULL) {
-        cmd << " --skip-innodb"; // This only applies to RH6
-    }
     cmd << " 1>/dev/null &";
-    SysCmd(cmd, FailokQ(false), DryrunQ(false), EchoQ(false));
+    SysCmd(cmd, FailokQ(false));
     // wait for it to start -- wait for a few seconds, then print the error
     // file and exit
     int step = 0;
     tempstr waitcmd = Subst(acr_my::_db.R
-                            , "/usr/bin/mysqladmin"
+                            , "mysqladmin"
                             " --no-defaults"
                             " --protocol=socket"
                             " --socket=$data_dir/mysql.sock"
                             " ping 1>/dev/null 2>&1");
+    SchedTime t0=CurrSchedTime();
     do {
-        started = SysCmd(Zeroterm(waitcmd),FailokQ(true),DryrunQ(false))==0;
-        if (step % 20 == 19 && step >= 20 * 3 ) {
+        started = SysCmd(Zeroterm(waitcmd))==0;
+        if (step % 10 == 9) {// print message every few seconds
             prlog("waiting for server startup...");
         }
-        SleepMsec(50);
+        SleepMsec(100);
         step++;
-    } while (!started && step < 20 * 5);
+    } while (!started && ElapsedSecs(t0,CurrSchedTime()) < 5.0);
 
     // oops -- start failed. proceed straight to abort.
     if (!started) {
         prerr("acr_my.server_start_timeout"
-              <<Keyval("comment","here are the last few lines of mysql/mysqld.log. perhaps it will help:"));
-        SysCmd("tail -20 mysql/mysqld.log", FailokQ(true), DryrunQ(false), EchoQ(false));
+              <<Keyval("comment","here are the last few lines of mysqld.log. perhaps it will help:"));
+        SysCmd(Subst(acr_my::_db.R,"tail -20 $data_dir/mysqld.log"));
         vrfy(0, "start failed");
     }
 }
@@ -87,7 +86,7 @@ static void Main_Start() {
 
 static void Main_UploadNs(acr_my::FNsdb &nsdb) {
     command::ssim2mysql ssim2mysql;
-    ssim2mysql.url      = "sock:///mysql/mysql.sock";
+    ssim2mysql.url      = Subst(acr_my::_db.R, "sock:///$data_dir/mysql.sock");
     ssim2mysql.db       = nsdb.ns;
     ssim2mysql.fkey     = acr_my::_db.cmdline.fkey;
     ssim2mysql.trunc    = true;
@@ -110,7 +109,7 @@ static void Main_UploadNs(acr_my::FNsdb &nsdb) {
     // cat will hang if it is not passed a list of filenames!
     if (nfile > 0) {
         cmd << " | " << ssim2mysql_ToCmdline(ssim2mysql);
-        SysCmd(cmd, FailokQ(false), DryrunQ(false), EchoQ(false));
+        SysCmd(cmd, FailokQ(false));
     }
 }
 
@@ -124,7 +123,7 @@ static void Main_Upload() {
 
 static void Main_DownloadNs(acr_my::FNsdb &nsdb) {
     command::mysql2ssim mysql2ssim;
-    mysql2ssim.url << "sock:///mysql/mysql.sock/" << nsdb.ns;
+    mysql2ssim.url << Subst(acr_my::_db.R, "sock:///$data_dir/mysql.sock/") << nsdb.ns;
     mysql2ssim.baddbok = true; // missing database is OK, keep calm and carry on
     // write directly to ssimfile (but not if fldfunc)
     mysql2ssim.writessimfile = !acr_my::_db.cmdline.fldfunc;
@@ -134,7 +133,7 @@ static void Main_DownloadNs(acr_my::FNsdb &nsdb) {
     if (acr_my::_db.cmdline.fldfunc) {
         cmd << " | acr -replace -write -print:N -report:N";
     }
-    SysCmd(cmd, FailokQ(false), DryrunQ(false), EchoQ(false));
+    SysCmd(cmd, FailokQ(false));
 }
 
 static void Main_Download() {
@@ -146,7 +145,7 @@ static void Main_Download() {
 // -----------------------------------------------------------------------------
 
 static bool MysqlUpQ(int pid) {
-    bool up = FileQ("mysql/mysql_pid");
+    bool up = FileQ(Subst(acr_my::_db.R, "$data_dir/mysql_pid"));
     up = up || (pid!=0 && DirectoryQ(tempstr()<<"/proc/"<<pid<<"/fd"));
     return up;
 }
@@ -155,9 +154,9 @@ static bool MysqlUpQ(int pid) {
 
 static void Main_Stop() {
     int step=0;
-    int pid=ParseI32(algo::FileToString("mysql/mysql_pid",algo_FileFlags_none),0);
+    int pid=ParseI32(algo::FileToString(Subst(acr_my::_db.R,"$data_dir/mysql_pid"),algo_FileFlags_none),0);
     tempstr cmd = Subst(acr_my::_db.R
-                        , "/usr/bin/mysqladmin"
+                        , "mysqladmin"
                         " --no-defaults"
                         " --protocol=socket"
                         " --socket=$data_dir/mysql.sock"
@@ -188,7 +187,7 @@ static void Main_Shell() {
     Set(acr_my::_db.R, "$db", lastns);
     // entering interactive shell here --
     // when command returns, the user is done.
-    SysCmd(Subst(acr_my::_db.R, "mysql -S mysql/mysql.sock $db"), FailokQ(false), DryrunQ(false), EchoQ(false));
+    SysCmd(Subst(acr_my::_db.R, "mysql -S $data_dir/mysql.sock $db"), FailokQ(false));
 }
 
 // -----------------------------------------------------------------------------
@@ -208,20 +207,16 @@ void acr_my::Main() {
     }
 
     // has to be a full pathname, otherwise mysql fails.
-    acr_my::_db.data_dir << GetCurDir() << "/mysql";
+    acr_my::_db.data_dir << GetCurDir() << "/temp/mysql";
     Set(acr_my::_db.R, "$data_dir", acr_my::_db.data_dir);
 
-    int nselect=0;
     ind_beg(acr_my::_db_nsdb_curs, nsdb,acr_my::_db) {
         bool match = Regx_Match(acr_my::_db.cmdline.nsdb, tempstr()<<nsdb.ns<<".");// allow dmmeta.% to match dmmeta
         match |= Regx_Match(acr_my::_db.cmdline.nsdb, nsdb.ns);// allow dmm%a to match dmmeta
         if (match) {
             nsdb.select=true;
-            nselect++;
         }
     }ind_end;
-
-    vrfy(!acr_my::_db.cmdline.start || nselect>0, "no namespace selected");
 
     // start mysql
     if (acr_my::_db.cmdline.start) {

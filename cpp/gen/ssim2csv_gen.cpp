@@ -45,13 +45,13 @@ const char *ssim2csv_syntax =
 ;
 } // namespace ssim2csv
 namespace ssim2csv {
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-static void          SizeCheck();
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    static void          SizeCheck();
 } // end namespace ssim2csv
 
 // --- ssim2csv.trace..Print
@@ -140,7 +140,7 @@ bool ssim2csv::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- ssim2csv.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool ssim2csv::_db_XrefMaybe() {
     bool retval = true;
     return retval;
@@ -216,7 +216,7 @@ void ssim2csv::expand_RemoveLast() {
 
 // --- ssim2csv.FDb.expand.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool ssim2csv::expand_XrefMaybe(ssim2csv::FExpand &row) {
     bool retval = true;
     (void)row;
@@ -423,7 +423,7 @@ void ssim2csv::outfile_RemoveLast() {
 
 // --- ssim2csv.FDb.outfile.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool ssim2csv::outfile_XrefMaybe(ssim2csv::FOutfile &row) {
     bool retval = true;
     (void)row;
@@ -829,7 +829,7 @@ void ssim2csv::flatten_AbsReserve(int n) {
 
 // --- ssim2csv.FDb.flatten.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool ssim2csv::flatten_XrefMaybe(ssim2csv::FFlatten &row) {
     bool retval = true;
     (void)row;
@@ -1066,10 +1066,7 @@ int main(int argc, char **argv) {
         ssim2csv::FDb_Init();
         algo_lib::_db.argc = argc;
         algo_lib::_db.argv = argv;
-        algo_lib::_db.epoll_fd = epoll_create(1);
-        if (algo_lib::_db.epoll_fd == -1) {
-            FatalErrorExit("epoll_create");
-        }
+        algo_lib::IohookInit();
         ssim2csv::MainArgs(algo_lib::_db.argc,algo_lib::_db.argv); // dmmeta.main:ssim2csv
     } catch(algo_lib::ErrorX &x) {
         prerr("ssim2csv.error  " << x); // there may be additional hints in DetachBadTags

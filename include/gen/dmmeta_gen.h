@@ -226,7 +226,6 @@ extern const char *  dmmeta_Ns_ns_lib_json;     // lib_json      fconst:dmmeta.N
 extern const char *  dmmeta_Ns_ns_lib_mysql;    // lib_mysql     fconst:dmmeta.Ns.ns/lib_mysql
 extern const char *  dmmeta_Ns_ns_lib_prot;     // lib_prot      fconst:dmmeta.Ns.ns/lib_prot
 extern const char *  dmmeta_Ns_ns_lib_sql;      // lib_sql       fconst:dmmeta.Ns.ns/lib_sql
-extern const char *  dmmeta_Ns_ns_lz4_lib;      // lz4_lib       fconst:dmmeta.Ns.ns/lz4_lib
 extern const char *  dmmeta_Ns_ns_mdbg;         // mdbg          fconst:dmmeta.Ns.ns/mdbg
 extern const char *  dmmeta_Ns_ns_mysql2ssim;   // mysql2ssim    fconst:dmmeta.Ns.ns/mysql2ssim
 extern const char *  dmmeta_Ns_ns_report;       // report        fconst:dmmeta.Ns.ns/report
@@ -389,7 +388,6 @@ extern const char *  dmmeta_Ssimfile_ssimfile_dev_srcfile;           // dev.srcf
 extern const char *  dmmeta_Ssimfile_ssimfile_dev_syslib;            // dev.syslib             fconst:dmmeta.Ssimfile.ssimfile/dev.syslib
 extern const char *  dmmeta_Ssimfile_ssimfile_dev_targdep;           // dev.targdep            fconst:dmmeta.Ssimfile.ssimfile/dev.targdep
 extern const char *  dmmeta_Ssimfile_ssimfile_dev_target;            // dev.target             fconst:dmmeta.Ssimfile.ssimfile/dev.target
-extern const char *  dmmeta_Ssimfile_ssimfile_dev_targinstall;       // dev.targinstall        fconst:dmmeta.Ssimfile.ssimfile/dev.targinstall
 extern const char *  dmmeta_Ssimfile_ssimfile_dev_targsrc;           // dev.targsrc            fconst:dmmeta.Ssimfile.ssimfile/dev.targsrc
 extern const char *  dmmeta_Ssimfile_ssimfile_dev_targsyslib;        // dev.targsyslib         fconst:dmmeta.Ssimfile.ssimfile/dev.targsyslib
 extern const char *  dmmeta_Ssimfile_ssimfile_dev_tool_opt;          // dev.tool_opt           fconst:dmmeta.Ssimfile.ssimfile/dev.tool_opt

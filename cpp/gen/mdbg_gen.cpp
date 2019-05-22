@@ -29,7 +29,7 @@ mdbg::FDb       mdbg::_db;        // dependency found via dev.targdep
 
 namespace mdbg {
 const char *mdbg_help =
-"mdbg: Module debugger\n"
+"mdbg: My debugger\n"
 "Usage: mdbg [options]\n"
 "    [target]       string  Executable name\n"
 "    [args]         string  Additional module args\n"
@@ -73,15 +73,15 @@ const char *mdbg_syntax =
 ;
 } // namespace mdbg
 namespace mdbg {
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-static bool          cfg_InputMaybe(dev::Cfg &elem) __attribute__((nothrow));
-static bool          builddir_InputMaybe(dev::Builddir &elem) __attribute__((nothrow));
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-static void          SizeCheck();
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    static bool          cfg_InputMaybe(dev::Cfg &elem) __attribute__((nothrow));
+    static bool          builddir_InputMaybe(dev::Builddir &elem) __attribute__((nothrow));
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    static void          SizeCheck();
 } // end namespace mdbg
 
 // --- mdbg.FBuilddir.base.CopyOut
@@ -98,9 +98,27 @@ void mdbg::builddir_CopyIn(mdbg::FBuilddir &row, dev::Builddir &in) {
     row.comment = in.comment;
 }
 
+// --- mdbg.FBuilddir.uname.Get
+algo::Smallstr50 mdbg::uname_Get(mdbg::FBuilddir& builddir) {
+    algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LL-LL"));
+    return ret;
+}
+
+// --- mdbg.FBuilddir.compiler.Get
+algo::Smallstr50 mdbg::compiler_Get(mdbg::FBuilddir& builddir) {
+    algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LL-LR"));
+    return ret;
+}
+
 // --- mdbg.FBuilddir.cfg.Get
 algo::Smallstr50 mdbg::cfg_Get(mdbg::FBuilddir& builddir) {
     algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LR-LL"));
+    return ret;
+}
+
+// --- mdbg.FBuilddir.arch.Get
+algo::Smallstr50 mdbg::arch_Get(mdbg::FBuilddir& builddir) {
+    algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LR-LR"));
     return ret;
 }
 
@@ -339,7 +357,7 @@ static void mdbg::InitReflection() {
 
 
     // -- load signatures of existing dispatches --
-    algo_lib::InsertStrptrMaybe("dmmeta.Dispsigcheck  dispsig:'mdbg.Input'  signature:'0568f0b974157130442f93c8e4d5cc3f859d069b'");
+    algo_lib::InsertStrptrMaybe("dmmeta.Dispsigcheck  dispsig:'mdbg.Input'  signature:'aa5e06ab452d862c1bcf55dfd92cdb360fac8740'");
 }
 
 // --- mdbg.FDb._db.StaticCheck
@@ -400,7 +418,7 @@ bool mdbg::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- mdbg.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool mdbg::_db_XrefMaybe() {
     bool retval = true;
     return retval;
@@ -497,7 +515,7 @@ static bool mdbg::cfg_InputMaybe(dev::Cfg &elem) {
 
 // --- mdbg.FDb.cfg.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool mdbg::cfg_XrefMaybe(mdbg::FCfg &row) {
     bool retval = true;
     (void)row;
@@ -717,7 +735,7 @@ static bool mdbg::builddir_InputMaybe(dev::Builddir &elem) {
 
 // --- mdbg.FDb.builddir.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool mdbg::builddir_XrefMaybe(mdbg::FBuilddir &row) {
     bool retval = true;
     (void)row;
@@ -749,7 +767,6 @@ inline static i32 mdbg::trace_N() {
 // Set all fields to initial values.
 void mdbg::FDb_Init() {
     memset(_db.lpool_free, 0, sizeof(_db.lpool_free));
-    _db.rhel7 = bool(false);
     // initialize LAry cfg (mdbg.FDb.cfg)
     _db.cfg_n = 0;
     memset(_db.cfg_lary, 0, sizeof(_db.cfg_lary)); // zero out all level pointers
@@ -972,10 +989,7 @@ int main(int argc, char **argv) {
         mdbg::FDb_Init();
         algo_lib::_db.argc = argc;
         algo_lib::_db.argv = argv;
-        algo_lib::_db.epoll_fd = epoll_create(1);
-        if (algo_lib::_db.epoll_fd == -1) {
-            FatalErrorExit("epoll_create");
-        }
+        algo_lib::IohookInit();
         mdbg::MainArgs(algo_lib::_db.argc,algo_lib::_db.argv); // dmmeta.main:mdbg
     } catch(algo_lib::ErrorX &x) {
         prerr("mdbg.error  " << x); // there may be additional hints in DetachBadTags

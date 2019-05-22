@@ -9,8 +9,8 @@
 
 #pragma once
 #include "include/gen/command_gen.h"
-#include "include/gen/algo_gen.h"
 #include "include/gen/dmmeta_gen.h"
+#include "include/gen/algo_gen.h"
 #include "include/gen/dev_gen.h"
 //#pragma endinclude
 
@@ -79,8 +79,6 @@ struct FDb { // src_hdr.FDb
     i32                  ind_ns_n;               // number of elements in the hash table
     src_hdr::FNsx*       nsx_lary[32];           // level array
     i32                  nsx_n;                  // number of elements in array
-    i32                  year;                   //   0  Current year
-    algo::cstring        license;                //
     src_hdr::trace       trace;                  //
 };
 
@@ -101,7 +99,7 @@ bool                 LoadTuplesMaybe(algo::strptr root) __attribute__((nothrow))
 // Load specified ssimfile.
 bool                 LoadSsimfileMaybe(algo::strptr fname) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 _db_XrefMaybe();
 
 // Allocate memory for new default row.
@@ -127,7 +125,7 @@ void                 targsrc_RemoveLast() __attribute__((nothrow));
 // 'quick' Access row by row id. No bounds checking.
 src_hdr::FTargsrc&   targsrc_qFind(u64 t) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 targsrc_XrefMaybe(src_hdr::FTargsrc &row);
 
 // Allocate memory for new default row.
@@ -153,7 +151,7 @@ void                 ns_RemoveLast() __attribute__((nothrow));
 // 'quick' Access row by row id. No bounds checking.
 src_hdr::FNs&        ns_qFind(u64 t) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 ns_XrefMaybe(src_hdr::FNs &row);
 
 // Return true if hash is empty
@@ -196,7 +194,7 @@ void                 nsx_RemoveLast() __attribute__((nothrow));
 // 'quick' Access row by row id. No bounds checking.
 src_hdr::FNsx&       nsx_qFind(u64 t) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 nsx_XrefMaybe(src_hdr::FNsx &row);
 
 // cursor points to valid item
@@ -331,7 +329,6 @@ struct FSrc { // src_hdr.FSrc
     src_hdr::FTargsrc*   p_targsrc;        // reference to parent row
     algo::strptr         text;             //
     algo::cstring        copyright;        //
-    i32                  minyear;          //   0
     algo::cstring        created_by;       //
     algo::cstring        authors;          //
     algo::cstring        recent_changes;   //

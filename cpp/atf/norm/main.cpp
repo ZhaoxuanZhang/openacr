@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_norm (exe) -- Run normalization tests (see normcheck table)
+// Target: atf_norm (exe) -- Normalization tests (see normcheck table)
 // Exceptions: yes
 // Source: cpp/atf/norm/main.cpp
 //
@@ -52,28 +52,30 @@ void atf_norm::CheckCleanDirs(strptr dirs) {
 }
 
 static void CheckCleanDirsAll() {
-    atf_norm::CheckCleanDirs("cpp include data sql gen tsuite env utpobr");
+    atf_norm::CheckCleanDirs("cpp include data sql gen");
 }
 
 // -----------------------------------------------------------------------------
 
 void atf_norm::normcheck_testamc() {
-    command::atf_amc atf_amc;
-    SysCmd(atf_amc_ToCmdline(atf_amc)<< ">/dev/null",FailokQ(false));
+    command::atf_amc_proc atf_amc;
+    atf_amc.stdout = "> temp/atf_amc";
+    if (atf_amc_Exec(atf_amc)!=0) {
+        SysCmd("cat temp/atf_amc");
+        vrfy(0, "atf_amc returned an error");
+    }
 }
 
 // -----------------------------------------------------------------------------
 
 void atf_norm::normcheck_unit() {
-    command::atf_unit atf_unit;
-    atf_unit.perf_secs=0;
-    SysCmd(atf_unit_ToCmdline(atf_unit) << ">/dev/null",FailokQ(false));
-}
-
-// -----------------------------------------------------------------------------
-
-void atf_norm::normcheck_bootstrap() {
-    SysCmd("make bootstrap",FailokQ(false));
+    command::atf_unit_proc atf_unit;
+    atf_unit.cmd.perf_secs=0;
+    atf_unit.stdout = "> temp/atf_unit";
+    if (atf_unit_Exec(atf_unit)!=0) {
+        SysCmd("cat temp/atf_unit");
+        vrfy(0, "atf_unit returned an error");
+    }
 }
 
 // -----------------------------------------------------------------------------

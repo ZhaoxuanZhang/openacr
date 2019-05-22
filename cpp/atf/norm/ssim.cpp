@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_norm (exe) -- Run normalization tests (see normcheck table)
+// Target: atf_norm (exe) -- Normalization tests (see normcheck table)
 // Exceptions: yes
 // Source: cpp/atf/norm/ssim.cpp -- ssim database normalizations
 //
@@ -28,28 +28,26 @@
 // -----------------------------------------------------------------------------
 
 void atf_norm::normcheck_normalize_acr() {
-    command::acr acr;
-    acr.check = true;
-    acr.write = true;
-    acr.query = "%";
-    acr.print = false;
-    acr.report = false;
-    SysCmd(acr_ToCmdline(acr),FailokQ(false));
+    command::acr_proc acr;
+    acr.cmd.check = true;
+    acr.cmd.write = true;
+    acr.cmd.query = "%";
+    acr.cmd.print = false;
+    acr.cmd.report = false;
+    acr_ExecX(acr);
 }
 
 // -----------------------------------------------------------------------------
 
 void atf_norm::normcheck_normalize_acr_my() {
-    if (FileQ("bin/ssim2mysql")) {
-        command::acr_my acr_my;
-        acr_my.abort = true;
-        SysCmd(acr_my_ToCmdline(acr_my),FailokQ(false)); //return to known state
-        command::acr_my acr_my2;
-        acr_my2.start = true;
-        acr_my2.stop  = true;
-        acr_my2.nsdb.expr   = "%";
-        SysCmd(acr_my_ToCmdline(acr_my2),FailokQ(false));//# round trip all data through mysql
-    }
+    command::acr_my_proc acr_my;
+    acr_my.cmd.abort = true;
+    acr_my_ExecX(acr_my); //return to known state
+    command::acr_my_proc acr_my2;
+    acr_my2.cmd.start = true;
+    acr_my2.cmd.stop  = true;
+    acr_my2.cmd.nsdb.expr   = "%";
+    acr_my_ExecX(acr_my2);//# round trip all data through mysql
 }
 
 // -----------------------------------------------------------------------------

@@ -50,25 +50,23 @@ const char *dmmeta_Ns_ns_amc_gc      = "amc_gc";
 const char *dmmeta_Ns_ns_amc_vis     = "amc_vis";
 const char *dmmeta_Ns_ns_amcdb       = "amcdb";
 
-const char *dmmeta_Ns_ns_atf         = "atf";
-const char *dmmeta_Ns_ns_atf_amc     = "atf_amc";
-const char *dmmeta_Ns_ns_atf_norm    = "atf_norm";
-const char *dmmeta_Ns_ns_atf_unit    = "atf_unit";
-const char *dmmeta_Ns_ns_atfdb       = "atfdb";
-const char *dmmeta_Ns_ns_command     = "command";
-const char *dmmeta_Ns_ns_dev         = "dev";
-const char *dmmeta_Ns_ns_dmmeta      = "dmmeta";
-const char *dmmeta_Ns_ns_ietf        = "ietf";
-const char *dmmeta_Ns_ns_lib_ctype   = "lib_ctype";
-const char *dmmeta_Ns_ns_lib_exec    = "lib_exec";
-const char *dmmeta_Ns_ns_lib_git     = "lib_git";
-const char *dmmeta_Ns_ns_lib_iconv   = "lib_iconv";
-const char *dmmeta_Ns_ns_lib_json    = "lib_json";
-const char *dmmeta_Ns_ns_lib_mysql   = "lib_mysql";
-const char *dmmeta_Ns_ns_lib_prot    = "lib_prot";
-const char *dmmeta_Ns_ns_lib_sql     = "lib_sql";
-const char *dmmeta_Ns_ns_lz4_lib     = "lz4_lib";
-
+const char *dmmeta_Ns_ns_atf          = "atf";
+const char *dmmeta_Ns_ns_atf_amc      = "atf_amc";
+const char *dmmeta_Ns_ns_atf_norm     = "atf_norm";
+const char *dmmeta_Ns_ns_atf_unit     = "atf_unit";
+const char *dmmeta_Ns_ns_atfdb        = "atfdb";
+const char *dmmeta_Ns_ns_command      = "command";
+const char *dmmeta_Ns_ns_dev          = "dev";
+const char *dmmeta_Ns_ns_dmmeta       = "dmmeta";
+const char *dmmeta_Ns_ns_ietf         = "ietf";
+const char *dmmeta_Ns_ns_lib_ctype    = "lib_ctype";
+const char *dmmeta_Ns_ns_lib_exec     = "lib_exec";
+const char *dmmeta_Ns_ns_lib_git      = "lib_git";
+const char *dmmeta_Ns_ns_lib_iconv    = "lib_iconv";
+const char *dmmeta_Ns_ns_lib_json     = "lib_json";
+const char *dmmeta_Ns_ns_lib_mysql    = "lib_mysql";
+const char *dmmeta_Ns_ns_lib_prot     = "lib_prot";
+const char *dmmeta_Ns_ns_lib_sql      = "lib_sql";
 const char *dmmeta_Ns_ns_mdbg         = "mdbg";
 const char *dmmeta_Ns_ns_mysql2ssim   = "mysql2ssim";
 const char *dmmeta_Ns_ns_report       = "report";
@@ -163,7 +161,6 @@ const char *dmmeta_Ssimfile_ssimfile_dev_srcfile           = "dev.srcfile";
 const char *dmmeta_Ssimfile_ssimfile_dev_syslib            = "dev.syslib";
 const char *dmmeta_Ssimfile_ssimfile_dev_targdep           = "dev.targdep";
 const char *dmmeta_Ssimfile_ssimfile_dev_target            = "dev.target";
-const char *dmmeta_Ssimfile_ssimfile_dev_targinstall       = "dev.targinstall";
 const char *dmmeta_Ssimfile_ssimfile_dev_targsrc           = "dev.targsrc";
 const char *dmmeta_Ssimfile_ssimfile_dev_targsyslib        = "dev.targsyslib";
 const char *dmmeta_Ssimfile_ssimfile_dev_tool_opt          = "dev.tool_opt";
@@ -303,7 +300,7 @@ const char *dmmeta_Strtype_strtype_rightpad   = "rightpad";
 const char *dmmeta_Strtype_strtype_leftpad    = "leftpad";
 
 namespace dmmeta {
-static void          SizeCheck();
+    static void          SizeCheck();
 } // end namespace dmmeta
 
 // --- dmmeta.Anonfld..ReadFieldMaybe

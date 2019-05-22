@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_amc (exe)
+// Target: atf_amc (exe) -- Unit tests for amc (see amctest table)
 // Exceptions: NO
 // Source: cpp/atf/amc/numstr.cpp
 //
@@ -52,7 +52,7 @@ void atf_amc::amctest_Numstr() {
         vrfy_(strptr((char*)x.ch,6) == "123456");
         vrfy_(!ch_SetnumMaybe(x,1234567));
         // test empty string
-        ch_Set(x,"");
+        ch_SetStrptr(x,"");
         vrfy_(0 == ch_GetnumDflt(x,1));
     }
 
@@ -90,7 +90,7 @@ void atf_amc::amctest_Numstr() {
         vrfy_(ok);
 
         // test empty string
-        ch_Set(x,"");
+        ch_SetStrptr(x,"");
         vrfy_(0 == ch_GetnumDflt(x,1));
     }
 
@@ -130,7 +130,7 @@ void atf_amc::amctest_Numstr() {
         vrfy_(ok);
 
         // test empty string
-        ch_Set(x,"");
+        ch_SetStrptr(x,"");
         vrfy_(0 == ch_GetnumDflt(x,1));
     }
 
@@ -163,7 +163,7 @@ void atf_amc::amctest_Numstr() {
         vrfy_(ok);
 
         // test empty string
-        ch_Set(x,"");
+        ch_SetStrptr(x,"");
         vrfy_(0 ==ch_GetnumDflt(x,1));
     }
 

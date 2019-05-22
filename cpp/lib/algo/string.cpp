@@ -81,10 +81,19 @@ strptr algo::Pathcomp(strptr s, strptr expr) {
 // cstring is normally NOT null terminated (it is length-based),
 // so this function is necessary when passing strings to C library functions
 // or the OS
-const char *algo::Zeroterm(cstring &rhs) {
+char *algo::Zeroterm(cstring &rhs) {
     ch_Reserve(rhs, 1);
     rhs.ch_elems[rhs.ch_n]=0;
     return rhs.ch_elems;
+}
+
+// Same thing but with tempstr.
+// Typical usage is to take a strptr
+// expression and pass it to some unix call
+// some_unix_call(Zeroterm(tempstr(some_strptr)))
+//
+char *algo::Zeroterm(const tempstr &rhs) {
+    return algo::Zeroterm(static_cast<cstring&>(const_cast<tempstr&>(rhs)));
 }
 
 // -----------------------------------------------------------------------------
@@ -1414,4 +1423,58 @@ bool algo::AlignedEqual(strptr a, strptr b) {
 #else
     return StrEqual(a, b, true);
 #endif
+}
+
+// -----------------------------------------------------------------------------
+
+// insert TEXT into OUT, indenting as necessary;
+// Initial indentation is INDENT, it's adjusted as necessary as { and } are found
+// in the TEXT.
+// Each indent is 4 spaces.
+// Trailing //-sytle comments are stripped
+// /* */-style comments are not supported
+// Lines beginning with # (#ifdef, etc) are printed at column zero.
+void algo::InsertIndent(algo::cstring &out, strptr text, int indent) {
+    ind_beg(Line_curs,line,text) {
+        line = TrimmedRight(line);
+        int next_indent = indent;
+        int lcurly=-1;// offset
+        int rcurly=-1;// offset
+        int lstart=-1;
+        for (int i=0; i<line.n_elems; i++) {
+            char c = line.elems[i];
+            if (algo_lib::WhiteCharQ(c)) {
+                // whitespace
+            } else {
+                if (lstart == -1) {// save start of line
+                    lstart=i;
+                }
+                if (c == '{') {// opening curly in last position
+                    lcurly = i;
+                } else if (c== '}') {
+                    rcurly = lstart == i ? i:-1;// closing curly in first position
+                } else if (c=='/' && i<line.n_elems-1 && line[i+1]=='/') {
+                    break;
+                } else {
+                    lcurly=-1;// reset lcurly on any non-ws char
+                }
+            }
+        }
+        if (rcurly != -1) {
+            indent--;
+            next_indent--;
+        }
+        if (lcurly != -1) {
+            next_indent++;
+        }
+        if (lstart != -1) {
+            // line is un-indented if it starts with #
+            if (!(line.n_elems>0 && line.elems[0]=='#')) {
+                char_PrintNTimes(' ', out, indent*4);
+            }
+            out << RestFrom(line,lstart);
+        }
+        out << eol;
+        indent = i32_Max(next_indent,0);
+    }ind_end;
 }

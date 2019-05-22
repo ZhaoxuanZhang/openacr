@@ -25,6 +25,7 @@ strconv::FDb    strconv::_db;     // dependency found via dev.targdep
 
 namespace strconv {
 const char *strconv_help =
+"strconv: A simple string utility\n"
 "Usage: strconv str [options]\n"
 "    [str]          string  String parameter\n"
 "    -tocamelcase           Convert string to camel case. default: false\n"
@@ -46,13 +47,13 @@ const char *strconv_syntax =
 ;
 } // namespace strconv
 namespace strconv {
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-static void          SizeCheck();
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    static void          SizeCheck();
 } // end namespace strconv
 
 // --- strconv.trace..Print
@@ -143,7 +144,7 @@ bool strconv::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- strconv.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool strconv::_db_XrefMaybe() {
     bool retval = true;
     return retval;
@@ -255,10 +256,7 @@ int main(int argc, char **argv) {
         strconv::FDb_Init();
         algo_lib::_db.argc = argc;
         algo_lib::_db.argv = argv;
-        algo_lib::_db.epoll_fd = epoll_create(1);
-        if (algo_lib::_db.epoll_fd == -1) {
-            FatalErrorExit("epoll_create");
-        }
+        algo_lib::IohookInit();
         strconv::MainArgs(algo_lib::_db.argc,algo_lib::_db.argv); // dmmeta.main:strconv
     } catch(algo_lib::ErrorX &x) {
         prerr("strconv.error  " << x); // there may be additional hints in DetachBadTags

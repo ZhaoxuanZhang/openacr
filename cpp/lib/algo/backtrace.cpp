@@ -58,17 +58,29 @@
 // #AL#: we don't need fflush,. because stderr is line-buffered
 // by default.
 
+#ifdef __MACH__
+// 'The deprecated ucontext routines require _XOPEN_SOURCE to be defined'
+#define _XOPEN_SOURCE
+#endif
+
 #include <dlfcn.h>
+#ifndef __MACH__
 #include <elf.h>
+#endif
 #include <execinfo.h>// backtrace
+#include <ucontext.h>
 #include <cxxabi.h>// abi::__cxa_demangle
 
 // we need to silently break out on any error to do not cause segfault or exception
 #define break_if_not_(x) if (LIKELY(x)) ; else break
-#define STDERR_FILENO 2
 
 // Print backtrace symbols
 static void BacktraceSymbols_Print(aryptr<void*> addrlist, algo::cstring &lhs) {
+#ifdef __MACH__
+    //
+    (void)addrlist;
+    (void)lhs;
+#else
     // static symbol table
     int         fd        = -1;    // file descriptor to read
     Elf64_Ehdr  ehdr;              // ELF header, uninitilaized
@@ -183,7 +195,10 @@ static void BacktraceSymbols_Print(aryptr<void*> addrlist, algo::cstring &lhs) {
     if (shdr)   free(shdr);
     if (symtab) free(symtab);
     if (strtab) free(strtab);
+#endif
 }
+
+// -----------------------------------------------------------------------------
 
 static void PrintTraceCounters(cstring &out) {
     out << "algo_lib.crash_trace  comment:'Current values of trace counters are shown below'"<<eol;
@@ -213,11 +228,15 @@ static void PrintTraceCounters(cstring &out) {
     }ind_end;
 }
 
+// -----------------------------------------------------------------------------
+
 static void PrintTraces() {
     cstring &out=algo_lib::_db.fatalerr;
     PrintTraceCounters(out);
     algo_lib::h_fatalerror_Call();
 }
+
+// -----------------------------------------------------------------------------
 
 void algo::FatalErrorExit(const char *a) NORETURN {
     cstring &out = algo_lib::_db.fatalerr;
@@ -234,15 +253,33 @@ void algo::FatalErrorExit(const char *a) NORETURN {
     _exit(1);
 }
 
-static void Signal(int signal, siginfo_t *_si, void *context) {
-    (void)_si;
-    uintptr_t ip = context ? (uintptr_t)(((struct ucontext *)context)->uc_mcontext.gregs[REG_RIP]) : 0;
-    cstring &out=algo_lib::_db.fatalerr;
-    out << "algo_lib.signal  location:";
-    u64_PrintHex(ip, out, 8, true);
-    out << "  text:'"<<strsignal(signal)<<"'";
-    out<<eol;
-    out << " "<<gitinfo_Get()<<eol;
+// -----------------------------------------------------------------------------
+
+// Retrieve instruction pointer from signal handling context
+static uintptr_t GetIp(ucontext_t *uc) {
+    uintptr_t ret = 0;
+#if defined(__FreeBSD__)
+    ret = uc->uc_mcontext.mc_rip;
+#elif defined(__MACH__)
+    ret = uc->uc_mcontext->__ss.__rip;
+#else
+    ret = uc->uc_mcontext.gregs[REG_RIP];
+#endif
+    return ret;
+}
+
+// -----------------------------------------------------------------------------
+
+// Retrieve instruction pointer from signal handling context, as a string
+static tempstr IpString(ucontext_t *uc) {
+    tempstr ret;
+    u64_PrintHex(GetIp(uc), ret, 8, true);
+    return ret;
+}
+
+// -----------------------------------------------------------------------------
+
+static void ShowStackTrace(ucontext_t *uc, cstring &out) {
     void* addrlist[64];
     int nsyms = backtrace(addrlist, _array_count(addrlist));
     if (nsyms) {
@@ -252,7 +289,7 @@ static void Signal(int signal, siginfo_t *_si, void *context) {
         // if there were some signal handler wrappers.  Allow a few bytes
         // difference to cope with as many arches as possible.
         int start = 0 ;
-        for (; ip && start < nsyms; ++start) {
+        for (uintptr_t ip=GetIp(uc); ip && start < nsyms; ++start) {
             if ((uintptr_t) addrlist[start] >= ip - 16 && (uintptr_t) addrlist[start] <= ip + 16) {
                 break;
             }
@@ -264,6 +301,20 @@ static void Signal(int signal, siginfo_t *_si, void *context) {
         }
         BacktraceSymbols_Print(aryptr<void*>(addrlist+start,nsyms-start),out);
     }
+}
+
+// -----------------------------------------------------------------------------
+
+static void Signal(int signal, siginfo_t *_si, void *context) {
+    (void)_si;// ignore siginfo
+    ucontext_t *uc = (ucontext_t*)context;
+    cstring &out=algo_lib::_db.fatalerr;
+    out << "algo_lib.signal"
+        <<Keyval("local",IpString(uc))
+        <<Keyval("text",strsignal(signal))
+        <<eol;
+    out << algo::gitinfo_Get()<<eol;
+    ShowStackTrace(uc,out);
     PrintTraces();
     // do not use prerr, be safe: this function may be called from a thread
     // that doesn't support prerr.
@@ -287,7 +338,10 @@ void algo::SetupFatalSignals() {
     sigaction(SIGSEGV  ,&sa, NULL);
     sigaction(SIGILL   ,&sa, NULL);
     sigaction(SIGBUS   ,&sa, NULL);
+#ifdef __linux__
+    // is there a SIG stack fault on MacOS?
     sigaction(SIGSTKFLT,&sa, NULL);
+#endif
     sigaction(SIGABRT  ,&sa, NULL);
     sigaction(SIGFPE   ,&sa, NULL);
 }

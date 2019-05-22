@@ -41,8 +41,8 @@ namespace algo {
     struct TimeStruct : tm {
         int  tm_nsec;
         bool tm_neg;
-        TimeStruct() { ZeroBytes(*this); tm_isdst = -1;}
-    TimeStruct(const struct tm &t) : tm(t) { tm_nsec = 0; tm_neg = false;}
+        inline TimeStruct();
+        inline TimeStruct(const struct tm &t);
     };
 }
 
@@ -92,6 +92,12 @@ namespace algo { // update-hdr srcfile:"%/algo/time.%"
     // -------------------------------------------------------------------
     // include/algo/time.inl.h
     //
+
+    // get CPU HZ value as u64
+    inline u64 get_cpu_hz_int();
+
+    // get CPU HZ value as double
+    inline double get_cpu_hz();
 
     // cpu_hz (untyped SchedTime)
     // use this for timestamps.

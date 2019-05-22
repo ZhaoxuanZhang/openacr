@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_amc (exe)
+// Target: atf_amc (exe) -- Unit tests for amc (see amctest table)
 // Exceptions: NO
 // Source: cpp/atf/amc/exec.cpp
 //
@@ -26,8 +26,8 @@ static void CheckExecStatus(int scenario, int expected_status) {
     int pid=fork();
     if (pid==0) {// child
         algo_lib::DieWithParent();
-        prerr("atf_amc.exec_status"
-              <<Keyval("scenario",scenario));
+        verblog("atf_amc.exec_status"
+                <<Keyval("scenario",scenario));
         switch(scenario) {
         case 0: _exit(0); break;
         case 1: _exit(33); break;
@@ -66,7 +66,8 @@ void atf_amc::amctest_Exec_Status() {
 // Should this be generated?
 static algo::Fildes amc_StartRead(command::amc_proc &amc, algo_lib::FFildes &read) {
     int pipefd[2];
-    (void)pipe(pipefd);
+    int rc=pipe(pipefd);
+    (void)rc;
     read.fd.value = pipefd[0];
     amc.stdout  << ">&" << pipefd[1];
     amc_Start(amc);
@@ -79,7 +80,7 @@ static algo::Fildes amc_StartRead(command::amc_proc &amc, algo_lib::FFildes &rea
 void atf_amc::amctest_ReadProc() {
     // spawn a subprocess and read output line by line
     command::amc_proc amc;
-    amc.cmd.query.expr = "command.amc_proc";
+    amc.cmd.query = "command.amc_proc";
     algo_lib::FFildes read;
 
     prlog("reading output 1");
@@ -99,23 +100,23 @@ void atf_amc::amctest_ReadProc() {
 void atf_amc::amctest_ExecSh() {
     // spawn a shell subprocess...
     {
-        command::sh_proc sh;
-        sh.cmd.c = "true";
-        sh_ExecX(sh);
+        command::bash_proc bash;
+        bash.cmd.c = "true";
+        bash_ExecX(bash);
     }
     // try return value
     {
-        command::sh_proc sh;
-        sh.cmd.c = "false";
-        vrfy_(sh_Exec(sh)!=0);
+        command::bash_proc bash;
+        bash.cmd.c = "false";
+        vrfy_(bash_Exec(bash)!=0);
     }
     // make sure -verbose doesn't pass down...
     {
-        command::sh_proc sh;
+        command::bash_proc bash;
         algo_lib::_db.cmdline.verbose++;
-        sh.cmd.c = "ls";
-        vrfy_(FindStr(sh_ToCmdline(sh),"verbose")==-1);
-        vrfy_(sh_Exec(sh)==0);
+        bash.cmd.c = "ls";
+        vrfy_(FindStr(bash_ToCmdline(bash),"verbose")==-1);
+        vrfy_(bash_Exec(bash)==0);
         algo_lib::_db.cmdline.verbose--;
     }
 }

@@ -16,7 +16,7 @@
 #include "include/gen/algo_gen.inl.h"
 //#pragma endinclude
 namespace command {
-static void          SizeCheck();
+    static void          SizeCheck();
 } // end namespace command
 
 // --- command.FieldId.value.ToCstr
@@ -26,7 +26,7 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
     const char *ret = NULL;
     switch(value_GetEnum(parent)) {
         case command_FieldId_target        : ret = "target";  break;
-        case command_FieldId_in_dir        : ret = "in_dir";  break;
+        case command_FieldId_in            : ret = "in";  break;
         case command_FieldId_out_dir       : ret = "out_dir";  break;
         case command_FieldId_cfg           : ret = "cfg";  break;
         case command_FieldId_compiler      : ret = "compiler";  break;
@@ -36,7 +36,6 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_list          : ret = "list";  break;
         case command_FieldId_listincl      : ret = "listincl";  break;
         case command_FieldId_build         : ret = "build";  break;
-        case command_FieldId_line          : ret = "line";  break;
         case command_FieldId_preproc       : ret = "preproc";  break;
         case command_FieldId_clean         : ret = "clean";  break;
         case command_FieldId_dry_run       : ret = "dry_run";  break;
@@ -46,9 +45,7 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_testgen       : ret = "testgen";  break;
         case command_FieldId_install       : ret = "install";  break;
         case command_FieldId_coverity      : ret = "coverity";  break;
-        case command_FieldId_release       : ret = "release";  break;
         case command_FieldId_package       : ret = "package";  break;
-        case command_FieldId_nover         : ret = "nover";  break;
         case command_FieldId_maxerr        : ret = "maxerr";  break;
         case command_FieldId_disas         : ret = "disas";  break;
         case command_FieldId_report        : ret = "report";  break;
@@ -73,18 +70,18 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_tree          : ret = "tree";  break;
         case command_FieldId_loose         : ret = "loose";  break;
         case command_FieldId_my            : ret = "my";  break;
-        case command_FieldId_schema_dir    : ret = "schema_dir";  break;
+        case command_FieldId_schema        : ret = "schema";  break;
         case command_FieldId_e             : ret = "e";  break;
         case command_FieldId_b             : ret = "b";  break;
         case command_FieldId_t             : ret = "t";  break;
         case command_FieldId_rowid         : ret = "rowid";  break;
-        case command_FieldId_in            : ret = "in";  break;
         case command_FieldId_cmt           : ret = "cmt";  break;
         case command_FieldId_print         : ret = "print";  break;
         case command_FieldId_cmd           : ret = "cmd";  break;
         case command_FieldId_field         : ret = "field";  break;
         case command_FieldId_regxof        : ret = "regxof";  break;
         case command_FieldId_meta          : ret = "meta";  break;
+        case command_FieldId_line          : ret = "line";  break;
         case command_FieldId_point         : ret = "point";  break;
         case command_FieldId_type          : ret = "type";  break;
         case command_FieldId_create        : ret = "create";  break;
@@ -113,6 +110,7 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_hashfld       : ret = "hashfld";  break;
         case command_FieldId_sortfld       : ret = "sortfld";  break;
         case command_FieldId_unittest      : ret = "unittest";  break;
+        case command_FieldId_normcheck     : ret = "normcheck";  break;
         case command_FieldId_cppfunc       : ret = "cppfunc";  break;
         case command_FieldId_via           : ret = "via";  break;
         case command_FieldId_showcpp       : ret = "showcpp";  break;
@@ -132,6 +130,7 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_abort         : ret = "abort";  break;
         case command_FieldId_shell         : ret = "shell";  break;
         case command_FieldId_serv          : ret = "serv";  break;
+        case command_FieldId_in_dir        : ret = "in_dir";  break;
         case command_FieldId_proto         : ret = "proto";  break;
         case command_FieldId_trace         : ret = "trace";  break;
         case command_FieldId_fconst        : ret = "fconst";  break;
@@ -143,7 +142,6 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_noinput       : ret = "noinput";  break;
         case command_FieldId_render        : ret = "render";  break;
         case command_FieldId_amctest       : ret = "amctest";  break;
-        case command_FieldId_normcheck     : ret = "normcheck";  break;
         case command_FieldId_nofork        : ret = "nofork";  break;
         case command_FieldId_debug         : ret = "debug";  break;
         case command_FieldId_perf_secs     : ret = "perf_secs";  break;
@@ -163,7 +161,6 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_writessimfile : ret = "writessimfile";  break;
         case command_FieldId_url           : ret = "url";  break;
         case command_FieldId_tables        : ret = "tables";  break;
-        case command_FieldId_schema        : ret = "schema";  break;
         case command_FieldId_nologo        : ret = "nologo";  break;
         case command_FieldId_baddbok       : ret = "baddbok";  break;
         case command_FieldId_targsrc       : ret = "targsrc";  break;
@@ -181,6 +178,7 @@ const char* command::value_ToCstr(const command::FieldId& parent) {
         case command_FieldId_showsortkey   : ret = "showsortkey";  break;
         case command_FieldId_sortname      : ret = "sortname";  break;
         case command_FieldId_update_authors: ret = "update_authors";  break;
+        case command_FieldId_indent        : ret = "indent";  break;
         case command_FieldId_linelim       : ret = "linelim";  break;
         case command_FieldId_strayfile     : ret = "strayfile";  break;
         case command_FieldId_capture       : ret = "capture";  break;
@@ -415,9 +413,6 @@ bool command::value_SetStrptrMaybe(command::FieldId& parent, algo::strptr rhs) {
                 case LE_STR5('n','d','o','w','n'): {
                     value_SetEnum(parent,command_FieldId_ndown); ret = true; break;
                 }
-                case LE_STR5('n','o','v','e','r'): {
-                    value_SetEnum(parent,command_FieldId_nover); ret = true; break;
-                }
                 case LE_STR5('o','t','h','e','r'): {
                     value_SetEnum(parent,command_FieldId_other); ret = true; break;
                 }
@@ -488,6 +483,9 @@ bool command::value_SetStrptrMaybe(command::FieldId& parent, algo::strptr rhs) {
                 }
                 case LE_STR6('i','n','_','d','i','r'): {
                     value_SetEnum(parent,command_FieldId_in_dir); ret = true; break;
+                }
+                case LE_STR6('i','n','d','e','n','t'): {
+                    value_SetEnum(parent,command_FieldId_indent); ret = true; break;
                 }
                 case LE_STR6('i','n','s','e','r','t'): {
                     value_SetEnum(parent,command_FieldId_insert); ret = true; break;
@@ -617,9 +615,6 @@ bool command::value_SetStrptrMaybe(command::FieldId& parent, algo::strptr rhs) {
                 case LE_STR7('r','e','l','a','t','e','d'): {
                     value_SetEnum(parent,command_FieldId_related); ret = true; break;
                 }
-                case LE_STR7('r','e','l','e','a','s','e'): {
-                    value_SetEnum(parent,command_FieldId_release); ret = true; break;
-                }
                 case LE_STR7('r','e','p','l','a','c','e'): {
                     value_SetEnum(parent,command_FieldId_replace); ret = true; break;
                 }
@@ -736,10 +731,6 @@ bool command::value_SetStrptrMaybe(command::FieldId& parent, algo::strptr rhs) {
             switch (ReadLE64(rhs.elems)) {
                 case LE_STR8('c','a','t','c','h','t','h','r'): {
                     if (memcmp(rhs.elems+8,"ow",2)==0) { value_SetEnum(parent,command_FieldId_catchthrow); ret = true; break; }
-                    break;
-                }
-                case LE_STR8('s','c','h','e','m','a','_','d'): {
-                    if (memcmp(rhs.elems+8,"ir",2)==0) { value_SetEnum(parent,command_FieldId_schema_dir); ret = true; break; }
                     break;
                 }
                 case LE_STR8('s','h','o','w','s','t','a','t'): {
@@ -893,7 +884,7 @@ bool command::abt_ReadFieldMaybe(command::abt &parent, algo::strptr field, algo:
     bool retval = true; // default is no error
     switch(field_id) {
         case command_FieldId_target: retval = target_ReadStrptrMaybe(parent, strval); break;
-        case command_FieldId_in_dir: retval = algo::cstring_ReadStrptrMaybe(parent.in_dir, strval); break;
+        case command_FieldId_in: retval = algo::cstring_ReadStrptrMaybe(parent.in, strval); break;
         case command_FieldId_out_dir: retval = algo::cstring_ReadStrptrMaybe(parent.out_dir, strval); break;
         case command_FieldId_cfg: retval = algo::Smallstr50_ReadStrptrMaybe(parent.cfg, strval); break;
         case command_FieldId_compiler: retval = algo::Smallstr50_ReadStrptrMaybe(parent.compiler, strval); break;
@@ -903,7 +894,6 @@ bool command::abt_ReadFieldMaybe(command::abt &parent, algo::strptr field, algo:
         case command_FieldId_list: retval = bool_ReadStrptrMaybe(parent.list, strval); break;
         case command_FieldId_listincl: retval = bool_ReadStrptrMaybe(parent.listincl, strval); break;
         case command_FieldId_build: retval = bool_ReadStrptrMaybe(parent.build, strval); break;
-        case command_FieldId_line: retval = i32_ReadStrptrMaybe(parent.line, strval); break;
         case command_FieldId_preproc: retval = bool_ReadStrptrMaybe(parent.preproc, strval); break;
         case command_FieldId_clean: retval = bool_ReadStrptrMaybe(parent.clean, strval); break;
         case command_FieldId_dry_run: retval = bool_ReadStrptrMaybe(parent.dry_run, strval); break;
@@ -913,9 +903,7 @@ bool command::abt_ReadFieldMaybe(command::abt &parent, algo::strptr field, algo:
         case command_FieldId_testgen: retval = bool_ReadStrptrMaybe(parent.testgen, strval); break;
         case command_FieldId_install: retval = bool_ReadStrptrMaybe(parent.install, strval); break;
         case command_FieldId_coverity: retval = bool_ReadStrptrMaybe(parent.coverity, strval); break;
-        case command_FieldId_release: retval = algo::cstring_ReadStrptrMaybe(parent.release, strval); break;
         case command_FieldId_package: retval = algo::cstring_ReadStrptrMaybe(parent.package, strval); break;
-        case command_FieldId_nover: retval = bool_ReadStrptrMaybe(parent.nover, strval); break;
         case command_FieldId_maxerr: retval = u32_ReadStrptrMaybe(parent.maxerr, strval); break;
         case command_FieldId_disas: retval = disas_ReadStrptrMaybe(parent, strval); break;
         case command_FieldId_report: retval = bool_ReadStrptrMaybe(parent.report, strval); break;
@@ -948,7 +936,7 @@ bool command::abt_ReadTupleMaybe(command::abt &parent, algo::Tuple &tuple) {
 // Set all fields to initial values.
 void command::abt_Init(command::abt& parent) {
     Regx_ReadSql(parent.target, "", true);
-    parent.in_dir = algo::strptr("data");
+    parent.in = algo::strptr("data");
     parent.out_dir = algo::strptr("");
     parent.cfg = algo::strptr("");
     parent.compiler = algo::strptr("");
@@ -958,7 +946,6 @@ void command::abt_Init(command::abt& parent) {
     parent.list = bool(false);
     parent.listincl = bool(false);
     parent.build = bool(false);
-    parent.line = i32(0);
     parent.preproc = bool(false);
     parent.clean = bool(false);
     parent.dry_run = bool(false);
@@ -968,9 +955,7 @@ void command::abt_Init(command::abt& parent) {
     parent.testgen = bool(false);
     parent.install = bool(false);
     parent.coverity = bool(false);
-    parent.release = algo::strptr("");
     parent.package = algo::strptr("");
-    parent.nover = bool(false);
     parent.maxerr = u32(100);
     Regx_ReadSql(parent.disas, "", true);
     parent.report = bool(true);
@@ -987,10 +972,10 @@ void command::abt_PrintArgv(command::abt & row, algo::cstring &str) {
     command::target_Print(const_cast<command::abt&>(row), temp);
     str << " ";
     strptr_PrintBash(temp,str);
-    if (!(row.in_dir == "data")) {
+    if (!(row.in == "data")) {
         ch_RemoveAll(temp);
-        cstring_Print(row.in_dir, temp);
-        str << " -in_dir:";
+        cstring_Print(row.in, temp);
+        str << " -in:";
         strptr_PrintBash(temp,str);
     }
     if (!(row.out_dir == "")) {
@@ -1047,12 +1032,6 @@ void command::abt_PrintArgv(command::abt & row, algo::cstring &str) {
         str << " -build:";
         strptr_PrintBash(temp,str);
     }
-    if (!(row.line == 0)) {
-        ch_RemoveAll(temp);
-        i32_Print(row.line, temp);
-        str << " -line:";
-        strptr_PrintBash(temp,str);
-    }
     if (!(row.preproc == false)) {
         ch_RemoveAll(temp);
         bool_Print(row.preproc, temp);
@@ -1107,22 +1086,10 @@ void command::abt_PrintArgv(command::abt & row, algo::cstring &str) {
         str << " -coverity:";
         strptr_PrintBash(temp,str);
     }
-    if (!(row.release == "")) {
-        ch_RemoveAll(temp);
-        cstring_Print(row.release, temp);
-        str << " -release:";
-        strptr_PrintBash(temp,str);
-    }
     if (!(row.package == "")) {
         ch_RemoveAll(temp);
         cstring_Print(row.package, temp);
         str << " -package:";
-        strptr_PrintBash(temp,str);
-    }
-    if (!(row.nover == false)) {
-        ch_RemoveAll(temp);
-        bool_Print(row.nover, temp);
-        str << " -nover:";
         strptr_PrintBash(temp,str);
     }
     if (!(row.maxerr == 100)) {
@@ -1255,7 +1222,7 @@ void command::abt_ExecX(command::abt_proc& parent) {
 // Call execv()
 // Call execv with specified parameters -- cprint:abt.Argv
 int command::abt_Execv(command::abt_proc& parent) {
-    char *argv[27+2]; // start of first arg (future pointer)
+    char *argv[24+2]; // start of first arg (future pointer)
     algo::tempstr temp;
     int n_argv=0;
     argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
@@ -1269,10 +1236,10 @@ int command::abt_Execv(command::abt_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
-    if (parent.cmd.in_dir != "data") {
+    if (parent.cmd.in != "data") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-in_dir:";
-        cstring_Print(parent.cmd.in_dir, temp);
+        temp << "-in:";
+        cstring_Print(parent.cmd.in, temp);
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
@@ -1339,13 +1306,6 @@ int command::abt_Execv(command::abt_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
-    if (parent.cmd.line != 0) {
-        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-line:";
-        i32_Print(parent.cmd.line, temp);
-        ch_Alloc(temp) = 0;// NUL term for this arg
-    }
-
     if (parent.cmd.preproc != false) {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
         temp << "-preproc:";
@@ -1409,24 +1369,10 @@ int command::abt_Execv(command::abt_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
-    if (parent.cmd.release != "") {
-        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-release:";
-        cstring_Print(parent.cmd.release, temp);
-        ch_Alloc(temp) = 0;// NUL term for this arg
-    }
-
     if (parent.cmd.package != "") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
         temp << "-package:";
         cstring_Print(parent.cmd.package, temp);
-        ch_Alloc(temp) = 0;// NUL term for this arg
-    }
-
-    if (parent.cmd.nover != false) {
-        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-nover:";
-        bool_Print(parent.cmd.nover, temp);
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
@@ -1459,6 +1405,8 @@ int command::abt_Execv(command::abt_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -1514,7 +1462,7 @@ bool command::acr_ReadFieldMaybe(command::acr &parent, algo::strptr field, algo:
         case command_FieldId_tree: retval = bool_ReadStrptrMaybe(parent.tree, strval); break;
         case command_FieldId_loose: retval = bool_ReadStrptrMaybe(parent.loose, strval); break;
         case command_FieldId_my: retval = bool_ReadStrptrMaybe(parent.my, strval); break;
-        case command_FieldId_schema_dir: retval = algo::cstring_ReadStrptrMaybe(parent.schema_dir, strval); break;
+        case command_FieldId_schema: retval = algo::cstring_ReadStrptrMaybe(parent.schema, strval); break;
         case command_FieldId_e: retval = bool_ReadStrptrMaybe(parent.e, strval); break;
         case command_FieldId_b: retval = bool_ReadStrptrMaybe(parent.b, strval); break;
         case command_FieldId_t: retval = bool_ReadStrptrMaybe(parent.t, strval); break;
@@ -1576,7 +1524,7 @@ void command::acr_Init(command::acr& parent) {
     parent.tree = bool(false);
     parent.loose = bool(false);
     parent.my = bool(false);
-    parent.schema_dir = algo::strptr("data");
+    parent.schema = algo::strptr("data");
     parent.e = bool(false);
     parent.b = bool(false);
     parent.t = bool(false);
@@ -1722,10 +1670,10 @@ void command::acr_PrintArgv(command::acr & row, algo::cstring &str) {
         str << " -my:";
         strptr_PrintBash(temp,str);
     }
-    if (!(row.schema_dir == "data")) {
+    if (!(row.schema == "data")) {
         ch_RemoveAll(temp);
-        cstring_Print(row.schema_dir, temp);
-        str << " -schema_dir:";
+        cstring_Print(row.schema, temp);
+        str << " -schema:";
         strptr_PrintBash(temp,str);
     }
     if (!(row.e == false)) {
@@ -2036,6 +1984,8 @@ int command::acr_compl_Execv(command::acr_compl_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -2102,6 +2052,7 @@ bool command::acr_ed_ReadFieldMaybe(command::acr_ed &parent, algo::strptr field,
         case command_FieldId_hashfld: retval = algo::Smallstr100_ReadStrptrMaybe(parent.hashfld, strval); break;
         case command_FieldId_sortfld: retval = algo::Smallstr100_ReadStrptrMaybe(parent.sortfld, strval); break;
         case command_FieldId_unittest: retval = algo::cstring_ReadStrptrMaybe(parent.unittest, strval); break;
+        case command_FieldId_normcheck: retval = algo::cstring_ReadStrptrMaybe(parent.normcheck, strval); break;
         case command_FieldId_cppfunc: retval = algo::cstring_ReadStrptrMaybe(parent.cppfunc, strval); break;
         case command_FieldId_xref: retval = bool_ReadStrptrMaybe(parent.xref, strval); break;
         case command_FieldId_via: retval = algo::cstring_ReadStrptrMaybe(parent.via, strval); break;
@@ -2166,6 +2117,7 @@ void command::acr_ed_Init(command::acr_ed& parent) {
     parent.hashfld = algo::strptr("");
     parent.sortfld = algo::strptr("");
     parent.unittest = algo::strptr("");
+    parent.normcheck = algo::strptr("");
     parent.cppfunc = algo::strptr("");
     parent.xref = bool(false);
     parent.via = algo::strptr("");
@@ -2375,6 +2327,12 @@ void command::acr_ed_PrintArgv(command::acr_ed & row, algo::cstring &str) {
         str << " -unittest:";
         strptr_PrintBash(temp,str);
     }
+    if (!(row.normcheck == "")) {
+        ch_RemoveAll(temp);
+        cstring_Print(row.normcheck, temp);
+        str << " -normcheck:";
+        strptr_PrintBash(temp,str);
+    }
     if (!(row.cppfunc == "")) {
         ch_RemoveAll(temp);
         cstring_Print(row.cppfunc, temp);
@@ -2526,7 +2484,7 @@ void command::acr_ed_ExecX(command::acr_ed_proc& parent) {
 // Call execv()
 // Call execv with specified parameters -- cprint:acr_ed.Argv
 int command::acr_ed_Execv(command::acr_ed_proc& parent) {
-    char *argv[40+2]; // start of first arg (future pointer)
+    char *argv[41+2]; // start of first arg (future pointer)
     algo::tempstr temp;
     int n_argv=0;
     argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
@@ -2757,6 +2715,13 @@ int command::acr_ed_Execv(command::acr_ed_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
+    if (parent.cmd.normcheck != "") {
+        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
+        temp << "-normcheck:";
+        cstring_Print(parent.cmd.normcheck, temp);
+        ch_Alloc(temp) = 0;// NUL term for this arg
+    }
+
     if (parent.cmd.cppfunc != "") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
         temp << "-cppfunc:";
@@ -2821,6 +2786,8 @@ int command::acr_ed_Execv(command::acr_ed_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -2890,7 +2857,7 @@ bool command::acr_in_ReadFieldMaybe(command::acr_in &parent, algo::strptr field,
         case command_FieldId_sigcheck: retval = bool_ReadStrptrMaybe(parent.sigcheck, strval); break;
         case command_FieldId_list: retval = bool_ReadStrptrMaybe(parent.list, strval); break;
         case command_FieldId_data_dir: retval = algo::cstring_ReadStrptrMaybe(parent.data_dir, strval); break;
-        case command_FieldId_schema_dir: retval = algo::cstring_ReadStrptrMaybe(parent.schema_dir, strval); break;
+        case command_FieldId_schema: retval = algo::cstring_ReadStrptrMaybe(parent.schema, strval); break;
         case command_FieldId_related: retval = algo::cstring_ReadStrptrMaybe(parent.related, strval); break;
         case command_FieldId_notssimfile: retval = notssimfile_ReadStrptrMaybe(parent, strval); break;
         case command_FieldId_checkable: retval = bool_ReadStrptrMaybe(parent.checkable, strval); break;
@@ -2926,7 +2893,7 @@ void command::acr_in_Init(command::acr_in& parent) {
     parent.sigcheck = bool(true);
     parent.list = bool(false);
     parent.data_dir = algo::strptr("data");
-    parent.schema_dir = algo::strptr("data");
+    parent.schema = algo::strptr("data");
     parent.related = algo::strptr("");
     Regx_ReadSql(parent.notssimfile, "", true);
     parent.checkable = bool(false);
@@ -2967,10 +2934,10 @@ void command::acr_in_PrintArgv(command::acr_in & row, algo::cstring &str) {
         str << " -data_dir:";
         strptr_PrintBash(temp,str);
     }
-    if (!(row.schema_dir == "data")) {
+    if (!(row.schema == "data")) {
         ch_RemoveAll(temp);
-        cstring_Print(row.schema_dir, temp);
-        str << " -schema_dir:";
+        cstring_Print(row.schema, temp);
+        str << " -schema:";
         strptr_PrintBash(temp,str);
     }
     if (!(row.related == "")) {
@@ -3145,10 +3112,10 @@ int command::acr_in_Execv(command::acr_in_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
-    if (parent.cmd.schema_dir != "data") {
+    if (parent.cmd.schema != "data") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-schema_dir:";
-        cstring_Print(parent.cmd.schema_dir, temp);
+        temp << "-schema:";
+        cstring_Print(parent.cmd.schema, temp);
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
@@ -3181,6 +3148,8 @@ int command::acr_in_Execv(command::acr_in_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -3232,7 +3201,7 @@ bool command::acr_my_ReadFieldMaybe(command::acr_my &parent, algo::strptr field,
     switch(field_id) {
         case command_FieldId_nsdb: retval = nsdb_ReadStrptrMaybe(parent, strval); break;
         case command_FieldId_in: retval = algo::cstring_ReadStrptrMaybe(parent.in, strval); break;
-        case command_FieldId_schema_dir: retval = algo::cstring_ReadStrptrMaybe(parent.schema_dir, strval); break;
+        case command_FieldId_schema: retval = algo::cstring_ReadStrptrMaybe(parent.schema, strval); break;
         case command_FieldId_fldfunc: retval = bool_ReadStrptrMaybe(parent.fldfunc, strval); break;
         case command_FieldId_fkey: retval = bool_ReadStrptrMaybe(parent.fkey, strval); break;
         case command_FieldId_e: retval = bool_ReadStrptrMaybe(parent.e, strval); break;
@@ -3271,7 +3240,7 @@ bool command::acr_my_ReadTupleMaybe(command::acr_my &parent, algo::Tuple &tuple)
 void command::acr_my_Init(command::acr_my& parent) {
     Regx_ReadSql(parent.nsdb, "", true);
     parent.in = algo::strptr("data");
-    parent.schema_dir = algo::strptr("data");
+    parent.schema = algo::strptr("data");
     parent.fldfunc = bool(false);
     parent.fkey = bool(false);
     parent.e = bool(false);
@@ -3299,10 +3268,10 @@ void command::acr_my_PrintArgv(command::acr_my & row, algo::cstring &str) {
         str << " -in:";
         strptr_PrintBash(temp,str);
     }
-    if (!(row.schema_dir == "data")) {
+    if (!(row.schema == "data")) {
         ch_RemoveAll(temp);
-        cstring_Print(row.schema_dir, temp);
-        str << " -schema_dir:";
+        cstring_Print(row.schema, temp);
+        str << " -schema:";
         strptr_PrintBash(temp,str);
     }
     if (!(row.fldfunc == false)) {
@@ -3486,10 +3455,10 @@ int command::acr_my_Execv(command::acr_my_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
-    if (parent.cmd.schema_dir != "data") {
+    if (parent.cmd.schema != "data") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-schema_dir:";
-        cstring_Print(parent.cmd.schema_dir, temp);
+        temp << "-schema:";
+        cstring_Print(parent.cmd.schema, temp);
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
@@ -3557,6 +3526,8 @@ int command::acr_my_Execv(command::acr_my_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -3823,10 +3794,10 @@ int command::acr_Execv(command::acr_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
-    if (parent.cmd.schema_dir != "data") {
+    if (parent.cmd.schema != "data") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-schema_dir:";
-        cstring_Print(parent.cmd.schema_dir, temp);
+        temp << "-schema:";
+        cstring_Print(parent.cmd.schema, temp);
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
@@ -3922,6 +3893,8 @@ int command::acr_Execv(command::acr_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -3950,21 +3923,6 @@ void command::acr_proc_Uninit(command::acr_proc& parent) {
     acr_Kill(parent); // kill child, ensure forward progress
 }
 
-// --- command.amc.query.Print
-// Print back to string
-void command::query_Print(command::amc& parent, algo::cstring &out) {
-    Regx_Print(parent.query, out);
-}
-
-// --- command.amc.query.ReadStrptrMaybe
-// Read Regx from string
-// Convert string to field. Return success value
-bool command::query_ReadStrptrMaybe(command::amc& parent, algo::strptr in) {
-    Regx_ReadSql(parent.query, in, true);
-    bool retval = true;// !parent.query.parseerror; -- TODO: uncomment
-    return retval;
-}
-
 // --- command.amc.trace.Print
 // Print back to string
 void command::trace_Print(command::amc& parent, algo::cstring &out) {
@@ -3987,7 +3945,7 @@ bool command::amc_ReadFieldMaybe(command::amc &parent, algo::strptr field, algo:
     bool retval = true; // default is no error
     switch(field_id) {
         case command_FieldId_in_dir: retval = algo::cstring_ReadStrptrMaybe(parent.in_dir, strval); break;
-        case command_FieldId_query: retval = query_ReadStrptrMaybe(parent, strval); break;
+        case command_FieldId_query: retval = algo::cstring_ReadStrptrMaybe(parent.query, strval); break;
         case command_FieldId_out_dir: retval = algo::cstring_ReadStrptrMaybe(parent.out_dir, strval); break;
         case command_FieldId_proto: retval = bool_ReadStrptrMaybe(parent.proto, strval); break;
         case command_FieldId_report: retval = bool_ReadStrptrMaybe(parent.report, strval); break;
@@ -4022,7 +3980,7 @@ bool command::amc_ReadTupleMaybe(command::amc &parent, algo::Tuple &tuple) {
 // Set all fields to initial values.
 void command::amc_Init(command::amc& parent) {
     parent.in_dir = algo::strptr("data");
-    Regx_ReadSql(parent.query, "", true);
+    parent.query = algo::strptr("");
     parent.out_dir = algo::strptr(".");
     parent.proto = bool(false);
     parent.report = bool(true);
@@ -4044,7 +4002,7 @@ void command::amc_PrintArgv(command::amc & row, algo::cstring &str) {
         strptr_PrintBash(temp,str);
     }
     ch_RemoveAll(temp);
-    command::query_Print(const_cast<command::amc&>(row), temp);
+    cstring_Print(row.query, temp);
     str << " ";
     strptr_PrintBash(temp,str);
     if (!(row.out_dir == ".")) {
@@ -4457,6 +4415,8 @@ int command::amc_gc_Execv(command::amc_gc_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -4583,10 +4543,10 @@ int command::amc_Execv(command::amc_proc& parent) {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
-    if (parent.cmd.query.expr != "") {
+    if (parent.cmd.query != "") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
         temp << "-query:";
-        command::query_Print(parent.cmd, temp);
+        cstring_Print(parent.cmd.query, temp);
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
@@ -4633,6 +4593,8 @@ int command::amc_Execv(command::amc_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -4964,6 +4926,8 @@ int command::amc_vis_Execv(command::amc_vis_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -5205,6 +5169,8 @@ int command::atf_amc_Execv(command::atf_amc_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -5446,6 +5412,8 @@ int command::atf_norm_Execv(command::atf_norm_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -5762,6 +5730,8 @@ int command::atf_unit_Execv(command::atf_unit_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -5788,6 +5758,154 @@ void command::atf_unit_proc_Uninit(command::atf_unit_proc& parent) {
 
     // command.atf_unit_proc.atf_unit.Uninit (Exec)  //
     atf_unit_Kill(parent); // kill child, ensure forward progress
+}
+
+// --- command.bash..PrintArgv
+// print command-line args of command::bash to string  -- cprint:command.bash.Argv
+void command::bash_PrintArgv(command::bash & row, algo::cstring &str) {
+    algo::tempstr temp;
+    (void)temp;
+    (void)row;
+    (void)str;
+    if (!(row.c == "")) {
+        ch_RemoveAll(temp);
+        cstring_Print(row.c, temp);
+        str << " -c ";
+        strptr_PrintBash(temp,str);
+    }
+}
+
+// --- command.bash_proc.bash.Start
+// Start subprocess
+// If subprocess already running, do nothing. Otherwise, start it
+int command::bash_Start(command::bash_proc& parent) {
+    int retval = 0;
+    if (parent.pid == 0) {
+        verblog(bash_ToCmdline(parent)); // maybe print command
+        parent.status = 0; // reset last status
+        parent.pid = fork();
+        if (parent.pid == 0) { // child
+            algo_lib::DieWithParent();
+            if (parent.timeout > 0) {
+                alarm(parent.timeout);
+            }
+            algo_lib::ApplyRedirect(parent.stdin, 0);
+            algo_lib::ApplyRedirect(parent.stdout, 1);
+            algo_lib::ApplyRedirect(parent.stderr, 2);
+            retval = bash_Execv(parent);
+            if (retval != 0) { // if start fails, print error
+                int err=errno;
+                prerr("command.bash_execv"
+                <<Keyval("errno",err)
+                <<Keyval("errstr",strerror(err))
+                <<Keyval("comment","Execv failed"));
+            }
+            _exit(127); // if failed to start, exit anyway
+        } else if (parent.pid == -1) {
+            retval = errno; // failed to fork
+        } else {
+            retval = parent.status; // parent
+        }
+    }
+    return retval;
+}
+
+// --- command.bash_proc.bash.Kill
+// Kill subprocess and wait
+void command::bash_Kill(command::bash_proc& parent) {
+    if (parent.pid != 0) {
+        kill(parent.pid,9);
+        bash_Wait(parent);
+    }
+}
+
+// --- command.bash_proc.bash.Wait
+// Wait for subprocess to return
+void command::bash_Wait(command::bash_proc& parent) {
+    if (parent.pid != 0) {
+        int wait_flags = 0;
+        int wait_status = 0;
+        int rc = -1;
+        do {
+            // really wait for subprocess to exit
+            rc = waitpid(parent.pid,&wait_status,wait_flags);
+        } while (rc==-1 && errno==EINTR);
+        if (rc == parent.pid) {
+            parent.status = wait_status;
+            parent.pid = 0;
+        }
+    }
+}
+
+// --- command.bash_proc.bash.Exec
+// Start + Wait
+// Execute subprocess and return exit code
+int command::bash_Exec(command::bash_proc& parent) {
+    bash_Start(parent);
+    bash_Wait(parent);
+    return parent.status;
+}
+
+// --- command.bash_proc.bash.ExecX
+// Start + Wait, throw exception on error
+// Execute subprocess; throw human-readable exception on error
+void command::bash_ExecX(command::bash_proc& parent) {
+    int rc = bash_Exec(parent);
+    vrfy(rc==0, tempstr() << "algo_lib.exec" << Keyval("cmd",bash_ToCmdline(parent))
+    << Keyval("comment",algo::DescribeWaitStatus(parent.status)));
+}
+
+// --- command.bash_proc.bash.Execv
+// Call execv()
+// Call execv with specified parameters -- cprint:bash.Argv
+int command::bash_Execv(command::bash_proc& parent) {
+    char *argv[1+2]; // start of first arg (future pointer)
+    algo::tempstr temp;
+    int n_argv=0;
+    argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
+    temp << parent.path;
+    ch_Alloc(temp) = 0;// NUL term for pathname
+
+    if (parent.cmd.c != "") {
+        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
+        temp << "-c";
+        ch_Alloc(temp) = 0;
+        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
+        cstring_Print(parent.cmd.c, temp);
+        ch_Alloc(temp) = 0;// NUL term for this arg
+    }
+    argv[n_argv] = NULL; // last pointer
+    while (n_argv>0) { // shift pointers
+        argv[--n_argv] += (u64)temp.ch_elems;
+    }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
+    return execv(Zeroterm(parent.path),argv);
+}
+
+// --- command.bash_proc.bash.ToCmdline
+algo::tempstr command::bash_ToCmdline(command::bash_proc& parent) {
+    algo::tempstr retval;
+    retval << parent.path << " ";
+    command::bash_PrintArgv(parent.cmd,retval);
+    if (ch_N(parent.stdin)) {
+        retval << " " << parent.stdin;
+    }
+    if (ch_N(parent.stdout)) {
+        retval << " " << parent.stdout;
+    }
+    if (ch_N(parent.stderr)) {
+        retval << " 2" << parent.stderr;
+    }
+    return retval;
+}
+
+// --- command.bash_proc..Uninit
+void command::bash_proc_Uninit(command::bash_proc& parent) {
+    command::bash_proc &row = parent; (void)row;
+
+    // command.bash_proc.bash.Uninit (Exec)  //Must be bash to support $'' for string quoting
+    bash_Kill(parent); // kill child, ensure forward progress
 }
 
 // --- command.lib_ctype..ReadFieldMaybe
@@ -6323,6 +6441,8 @@ int command::mdbg_Execv(command::mdbg_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -6625,6 +6745,8 @@ int command::mysql2ssim_Execv(command::mysql2ssim_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -6651,152 +6773,6 @@ void command::mysql2ssim_proc_Uninit(command::mysql2ssim_proc& parent) {
 
     // command.mysql2ssim_proc.mysql2ssim.Uninit (Exec)  //
     mysql2ssim_Kill(parent); // kill child, ensure forward progress
-}
-
-// --- command.sh..PrintArgv
-// print command-line args of command::sh to string  -- cprint:command.sh.Argv
-void command::sh_PrintArgv(command::sh & row, algo::cstring &str) {
-    algo::tempstr temp;
-    (void)temp;
-    (void)row;
-    (void)str;
-    if (!(row.c == "")) {
-        ch_RemoveAll(temp);
-        cstring_Print(row.c, temp);
-        str << " -c ";
-        strptr_PrintBash(temp,str);
-    }
-}
-
-// --- command.sh_proc.sh.Start
-// Start subprocess
-// If subprocess already running, do nothing. Otherwise, start it
-int command::sh_Start(command::sh_proc& parent) {
-    int retval = 0;
-    if (parent.pid == 0) {
-        verblog(sh_ToCmdline(parent)); // maybe print command
-        parent.status = 0; // reset last status
-        parent.pid = fork();
-        if (parent.pid == 0) { // child
-            algo_lib::DieWithParent();
-            if (parent.timeout > 0) {
-                alarm(parent.timeout);
-            }
-            algo_lib::ApplyRedirect(parent.stdin, 0);
-            algo_lib::ApplyRedirect(parent.stdout, 1);
-            algo_lib::ApplyRedirect(parent.stderr, 2);
-            retval = sh_Execv(parent);
-            if (retval != 0) { // if start fails, print error
-                int err=errno;
-                prerr("command.sh_execv"
-                <<Keyval("errno",err)
-                <<Keyval("errstr",strerror(err))
-                <<Keyval("comment","Execv failed"));
-            }
-            _exit(127); // if failed to start, exit anyway
-        } else if (parent.pid == -1) {
-            retval = errno; // failed to fork
-        } else {
-            retval = parent.status; // parent
-        }
-    }
-    return retval;
-}
-
-// --- command.sh_proc.sh.Kill
-// Kill subprocess and wait
-void command::sh_Kill(command::sh_proc& parent) {
-    if (parent.pid != 0) {
-        kill(parent.pid,9);
-        sh_Wait(parent);
-    }
-}
-
-// --- command.sh_proc.sh.Wait
-// Wait for subprocess to return
-void command::sh_Wait(command::sh_proc& parent) {
-    if (parent.pid != 0) {
-        int wait_flags = 0;
-        int wait_status = 0;
-        int rc = -1;
-        do {
-            // really wait for subprocess to exit
-            rc = waitpid(parent.pid,&wait_status,wait_flags);
-        } while (rc==-1 && errno==EINTR);
-        if (rc == parent.pid) {
-            parent.status = wait_status;
-            parent.pid = 0;
-        }
-    }
-}
-
-// --- command.sh_proc.sh.Exec
-// Start + Wait
-// Execute subprocess and return exit code
-int command::sh_Exec(command::sh_proc& parent) {
-    sh_Start(parent);
-    sh_Wait(parent);
-    return parent.status;
-}
-
-// --- command.sh_proc.sh.ExecX
-// Start + Wait, throw exception on error
-// Execute subprocess; throw human-readable exception on error
-void command::sh_ExecX(command::sh_proc& parent) {
-    int rc = sh_Exec(parent);
-    vrfy(rc==0, tempstr() << "algo_lib.exec" << Keyval("cmd",sh_ToCmdline(parent))
-    << Keyval("comment",algo::DescribeWaitStatus(parent.status)));
-}
-
-// --- command.sh_proc.sh.Execv
-// Call execv()
-// Call execv with specified parameters -- cprint:sh.Argv
-int command::sh_Execv(command::sh_proc& parent) {
-    char *argv[1+2]; // start of first arg (future pointer)
-    algo::tempstr temp;
-    int n_argv=0;
-    argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-    temp << parent.path;
-    ch_Alloc(temp) = 0;// NUL term for pathname
-
-    if (parent.cmd.c != "") {
-        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        temp << "-c";
-        ch_Alloc(temp) = 0;
-        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
-        cstring_Print(parent.cmd.c, temp);
-        ch_Alloc(temp) = 0;// NUL term for this arg
-    }
-    argv[n_argv] = NULL; // last pointer
-    while (n_argv>0) { // shift pointers
-        argv[--n_argv] += (u64)temp.ch_elems;
-    }
-    return execv(Zeroterm(parent.path),argv);
-}
-
-// --- command.sh_proc.sh.ToCmdline
-algo::tempstr command::sh_ToCmdline(command::sh_proc& parent) {
-    algo::tempstr retval;
-    retval << parent.path << " ";
-    command::sh_PrintArgv(parent.cmd,retval);
-    if (ch_N(parent.stdin)) {
-        retval << " " << parent.stdin;
-    }
-    if (ch_N(parent.stdout)) {
-        retval << " " << parent.stdout;
-    }
-    if (ch_N(parent.stderr)) {
-        retval << " 2" << parent.stderr;
-    }
-    return retval;
-}
-
-// --- command.sh_proc..Uninit
-void command::sh_proc_Uninit(command::sh_proc& parent) {
-    command::sh_proc &row = parent; (void)row;
-
-    // command.sh_proc.sh.Uninit (Exec)  //
-    sh_Kill(parent); // kill child, ensure forward progress
 }
 
 // --- command.src_func.targsrc.Print
@@ -7325,6 +7301,8 @@ int command::src_func_Execv(command::src_func_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -7378,6 +7356,7 @@ bool command::src_hdr_ReadFieldMaybe(command::src_hdr &parent, algo::strptr fiel
         case command_FieldId_targsrc: retval = targsrc_ReadStrptrMaybe(parent, strval); break;
         case command_FieldId_write: retval = bool_ReadStrptrMaybe(parent.write, strval); break;
         case command_FieldId_update_authors: retval = bool_ReadStrptrMaybe(parent.update_authors, strval); break;
+        case command_FieldId_indent: retval = bool_ReadStrptrMaybe(parent.indent, strval); break;
         default: break;
     }
     if (!retval) {
@@ -7406,6 +7385,7 @@ void command::src_hdr_Init(command::src_hdr& parent) {
     Regx_ReadSql(parent.targsrc, "%", true);
     parent.write = bool(false);
     parent.update_authors = bool(false);
+    parent.indent = bool(false);
 }
 
 // --- command.src_hdr..PrintArgv
@@ -7437,6 +7417,12 @@ void command::src_hdr_PrintArgv(command::src_hdr & row, algo::cstring &str) {
         ch_RemoveAll(temp);
         bool_Print(row.update_authors, temp);
         str << " -update_authors:";
+        strptr_PrintBash(temp,str);
+    }
+    if (!(row.indent == false)) {
+        ch_RemoveAll(temp);
+        bool_Print(row.indent, temp);
+        str << " -indent:";
         strptr_PrintBash(temp,str);
     }
 }
@@ -7542,7 +7528,7 @@ void command::src_hdr_ExecX(command::src_hdr_proc& parent) {
 // Call execv()
 // Call execv with specified parameters -- cprint:src_hdr.Argv
 int command::src_hdr_Execv(command::src_hdr_proc& parent) {
-    char *argv[4+2]; // start of first arg (future pointer)
+    char *argv[5+2]; // start of first arg (future pointer)
     algo::tempstr temp;
     int n_argv=0;
     argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
@@ -7576,6 +7562,13 @@ int command::src_hdr_Execv(command::src_hdr_proc& parent) {
         bool_Print(parent.cmd.update_authors, temp);
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
+
+    if (parent.cmd.indent != false) {
+        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
+        temp << "-indent:";
+        bool_Print(parent.cmd.indent, temp);
+        ch_Alloc(temp) = 0;// NUL term for this arg
+    }
     for (int i=0; i+1 < algo_lib::_db.cmdline.verbose; i++) {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
         temp << "-verbose";
@@ -7585,6 +7578,8 @@ int command::src_hdr_Execv(command::src_hdr_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -7875,6 +7870,8 @@ int command::src_lim_Execv(command::src_lim_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -8083,6 +8080,8 @@ int command::ssim2csv_Execv(command::ssim2csv_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -8433,6 +8432,8 @@ int command::ssim2mysql_Execv(command::ssim2mysql_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -8680,6 +8681,8 @@ int command::strconv_Execv(command::strconv_proc& parent) {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if parent.path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(parent.path);
     return execv(Zeroterm(parent.path),argv);
 }
 
@@ -8711,7 +8714,7 @@ void command::strconv_proc_Uninit(command::strconv_proc& parent) {
 // --- command...SizeCheck
 inline static void command::SizeCheck() {
     algo_assert(_offset_of(command::abt,target) == 0);
-    algo_assert(_offset_of(command::abt,in_dir) == 96);
+    algo_assert(_offset_of(command::abt,in) == 96);
     algo_assert(_offset_of(command::abt,out_dir) == 112);
     algo_assert(_offset_of(command::abt,cfg) == 128);
     algo_assert(_offset_of(command::abt,compiler) == 180);
@@ -8721,23 +8724,20 @@ inline static void command::SizeCheck() {
     algo_assert(_offset_of(command::abt,list) == 337);
     algo_assert(_offset_of(command::abt,listincl) == 338);
     algo_assert(_offset_of(command::abt,build) == 339);
-    algo_assert(_offset_of(command::abt,line) == 340);
-    algo_assert(_offset_of(command::abt,preproc) == 344);
-    algo_assert(_offset_of(command::abt,clean) == 345);
-    algo_assert(_offset_of(command::abt,dry_run) == 346);
-    algo_assert(_offset_of(command::abt,maxjobs) == 348);
-    algo_assert(_offset_of(command::abt,printcmd) == 352);
-    algo_assert(_offset_of(command::abt,force) == 353);
-    algo_assert(_offset_of(command::abt,testgen) == 354);
-    algo_assert(_offset_of(command::abt,install) == 355);
-    algo_assert(_offset_of(command::abt,coverity) == 356);
-    algo_assert(_offset_of(command::abt,release) == 360);
-    algo_assert(_offset_of(command::abt,package) == 376);
-    algo_assert(_offset_of(command::abt,nover) == 392);
-    algo_assert(_offset_of(command::abt,maxerr) == 396);
-    algo_assert(_offset_of(command::abt,disas) == 400);
-    algo_assert(_offset_of(command::abt,report) == 496);
-    algo_assert(sizeof(command::abt) == 504);
+    algo_assert(_offset_of(command::abt,preproc) == 340);
+    algo_assert(_offset_of(command::abt,clean) == 341);
+    algo_assert(_offset_of(command::abt,dry_run) == 342);
+    algo_assert(_offset_of(command::abt,maxjobs) == 344);
+    algo_assert(_offset_of(command::abt,printcmd) == 348);
+    algo_assert(_offset_of(command::abt,force) == 349);
+    algo_assert(_offset_of(command::abt,testgen) == 350);
+    algo_assert(_offset_of(command::abt,install) == 351);
+    algo_assert(_offset_of(command::abt,coverity) == 352);
+    algo_assert(_offset_of(command::abt,package) == 360);
+    algo_assert(_offset_of(command::abt,maxerr) == 376);
+    algo_assert(_offset_of(command::abt,disas) == 384);
+    algo_assert(_offset_of(command::abt,report) == 480);
+    algo_assert(sizeof(command::abt) == 488);
     algo_assert(_offset_of(command::acr,query) == 0);
     algo_assert(_offset_of(command::acr,select) == 16);
     algo_assert(_offset_of(command::acr,del) == 17);
@@ -8759,7 +8759,7 @@ inline static void command::SizeCheck() {
     algo_assert(_offset_of(command::acr,tree) == 65);
     algo_assert(_offset_of(command::acr,loose) == 66);
     algo_assert(_offset_of(command::acr,my) == 67);
-    algo_assert(_offset_of(command::acr,schema_dir) == 72);
+    algo_assert(_offset_of(command::acr,schema) == 72);
     algo_assert(_offset_of(command::acr,e) == 88);
     algo_assert(_offset_of(command::acr,b) == 89);
     algo_assert(_offset_of(command::acr,t) == 90);
@@ -8810,28 +8810,29 @@ inline static void command::SizeCheck() {
     algo_assert(_offset_of(command::acr_ed,hashfld) == 1076);
     algo_assert(_offset_of(command::acr_ed,sortfld) == 1178);
     algo_assert(_offset_of(command::acr_ed,unittest) == 1280);
-    algo_assert(_offset_of(command::acr_ed,cppfunc) == 1296);
-    algo_assert(_offset_of(command::acr_ed,xref) == 1312);
-    algo_assert(_offset_of(command::acr_ed,via) == 1320);
-    algo_assert(_offset_of(command::acr_ed,showcpp) == 1336);
-    algo_assert(_offset_of(command::acr_ed,write) == 1337);
-    algo_assert(_offset_of(command::acr_ed,e) == 1338);
-    algo_assert(_offset_of(command::acr_ed,comment) == 1344);
-    algo_assert(_offset_of(command::acr_ed,sandbox) == 1360);
-    algo_assert(sizeof(command::acr_ed) == 1368);
+    algo_assert(_offset_of(command::acr_ed,normcheck) == 1296);
+    algo_assert(_offset_of(command::acr_ed,cppfunc) == 1312);
+    algo_assert(_offset_of(command::acr_ed,xref) == 1328);
+    algo_assert(_offset_of(command::acr_ed,via) == 1336);
+    algo_assert(_offset_of(command::acr_ed,showcpp) == 1352);
+    algo_assert(_offset_of(command::acr_ed,write) == 1353);
+    algo_assert(_offset_of(command::acr_ed,e) == 1354);
+    algo_assert(_offset_of(command::acr_ed,comment) == 1360);
+    algo_assert(_offset_of(command::acr_ed,sandbox) == 1376);
+    algo_assert(sizeof(command::acr_ed) == 1384);
     algo_assert(_offset_of(command::acr_in,ns) == 0);
     algo_assert(_offset_of(command::acr_in,data) == 96);
     algo_assert(_offset_of(command::acr_in,sigcheck) == 97);
     algo_assert(_offset_of(command::acr_in,list) == 98);
     algo_assert(_offset_of(command::acr_in,data_dir) == 104);
-    algo_assert(_offset_of(command::acr_in,schema_dir) == 120);
+    algo_assert(_offset_of(command::acr_in,schema) == 120);
     algo_assert(_offset_of(command::acr_in,related) == 136);
     algo_assert(_offset_of(command::acr_in,notssimfile) == 152);
     algo_assert(_offset_of(command::acr_in,checkable) == 248);
     algo_assert(sizeof(command::acr_in) == 256);
     algo_assert(_offset_of(command::acr_my,nsdb) == 0);
     algo_assert(_offset_of(command::acr_my,in) == 96);
-    algo_assert(_offset_of(command::acr_my,schema_dir) == 112);
+    algo_assert(_offset_of(command::acr_my,schema) == 112);
     algo_assert(_offset_of(command::acr_my,fldfunc) == 128);
     algo_assert(_offset_of(command::acr_my,fkey) == 129);
     algo_assert(_offset_of(command::acr_my,e) == 130);
@@ -8843,12 +8844,12 @@ inline static void command::SizeCheck() {
     algo_assert(sizeof(command::acr_my) == 136);
     algo_assert(_offset_of(command::amc,in_dir) == 0);
     algo_assert(_offset_of(command::amc,query) == 16);
-    algo_assert(_offset_of(command::amc,out_dir) == 112);
-    algo_assert(_offset_of(command::amc,proto) == 128);
-    algo_assert(_offset_of(command::amc,report) == 129);
-    algo_assert(_offset_of(command::amc,e) == 130);
-    algo_assert(_offset_of(command::amc,trace) == 136);
-    algo_assert(sizeof(command::amc) == 232);
+    algo_assert(_offset_of(command::amc,out_dir) == 32);
+    algo_assert(_offset_of(command::amc,proto) == 48);
+    algo_assert(_offset_of(command::amc,report) == 49);
+    algo_assert(_offset_of(command::amc,e) == 50);
+    algo_assert(_offset_of(command::amc,trace) == 56);
+    algo_assert(sizeof(command::amc) == 152);
     algo_assert(_offset_of(command::amc_dml,ns) == 0);
     algo_assert(_offset_of(command::amc_dml,fconst) == 96);
     algo_assert(_offset_of(command::amc_dml,gconst) == 97);
@@ -8882,6 +8883,17 @@ inline static void command::SizeCheck() {
     algo_assert(_offset_of(command::atf_unit,perf_secs) == 144);
     algo_assert(_offset_of(command::atf_unit,pertest_timeout) == 152);
     algo_assert(sizeof(command::atf_unit) == 160);
+    algo_assert(_offset_of(command::bash,c) == 0);
+    algo_assert(sizeof(command::bash) == 16);
+    algo_assert(_offset_of(command::bash_proc,path) == 0);
+    algo_assert(_offset_of(command::bash_proc,cmd) == 16);
+    algo_assert(_offset_of(command::bash_proc,stdin) == 32);
+    algo_assert(_offset_of(command::bash_proc,stdout) == 48);
+    algo_assert(_offset_of(command::bash_proc,stderr) == 64);
+    algo_assert(_offset_of(command::bash_proc,pid) == 80);
+    algo_assert(_offset_of(command::bash_proc,timeout) == 84);
+    algo_assert(_offset_of(command::bash_proc,status) == 88);
+    algo_assert(sizeof(command::bash_proc) == 96);
     algo_assert(_offset_of(command::lib_ctype,in) == 0);
     algo_assert(sizeof(command::lib_ctype) == 16);
     algo_assert(_offset_of(command::lib_exec,dry_run) == 0);
@@ -8914,17 +8926,6 @@ inline static void command::SizeCheck() {
     algo_assert(_offset_of(command::mysql2ssim,nologo) == 65);
     algo_assert(_offset_of(command::mysql2ssim,baddbok) == 66);
     algo_assert(sizeof(command::mysql2ssim) == 72);
-    algo_assert(_offset_of(command::sh,c) == 0);
-    algo_assert(sizeof(command::sh) == 16);
-    algo_assert(_offset_of(command::sh_proc,path) == 0);
-    algo_assert(_offset_of(command::sh_proc,cmd) == 16);
-    algo_assert(_offset_of(command::sh_proc,stdin) == 32);
-    algo_assert(_offset_of(command::sh_proc,stdout) == 48);
-    algo_assert(_offset_of(command::sh_proc,stderr) == 64);
-    algo_assert(_offset_of(command::sh_proc,pid) == 80);
-    algo_assert(_offset_of(command::sh_proc,timeout) == 84);
-    algo_assert(_offset_of(command::sh_proc,status) == 88);
-    algo_assert(sizeof(command::sh_proc) == 96);
     algo_assert(_offset_of(command::src_func,in) == 0);
     algo_assert(_offset_of(command::src_func,targsrc) == 16);
     algo_assert(_offset_of(command::src_func,name) == 112);
@@ -8949,6 +8950,7 @@ inline static void command::SizeCheck() {
     algo_assert(_offset_of(command::src_hdr,targsrc) == 16);
     algo_assert(_offset_of(command::src_hdr,write) == 112);
     algo_assert(_offset_of(command::src_hdr,update_authors) == 113);
+    algo_assert(_offset_of(command::src_hdr,indent) == 114);
     algo_assert(sizeof(command::src_hdr) == 120);
     algo_assert(_offset_of(command::src_lim,in) == 0);
     algo_assert(_offset_of(command::src_lim,linelim) == 16);

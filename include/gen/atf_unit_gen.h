@@ -389,7 +389,7 @@ u64                  number_Reserve(u64 n_elems) __attribute__((nothrow));
 // Return number of elements reserved.
 u64                  number_ReserveMem(u64 size) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 number_XrefMaybe(atf_unit::FNumber &row);
 
 // Return true if index is empty
@@ -453,7 +453,7 @@ void                 unittest_RemoveLast() __attribute__((nothrow));
 // 'quick' Access row by row id. No bounds checking.
 atf_unit::FUnittest& unittest_qFind(u64 t) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 unittest_XrefMaybe(atf_unit::FUnittest &row);
 
 // Main function
@@ -473,7 +473,7 @@ bool                 LoadTuplesMaybe(algo::strptr root) __attribute__((nothrow))
 // Load specified ssimfile.
 bool                 LoadSsimfileMaybe(algo::strptr fname) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 _db_XrefMaybe();
 
 // Return true if hash is empty
@@ -533,7 +533,7 @@ void                 testrun_RemoveLast() __attribute__((nothrow));
 // 'quick' Access row by row id. No bounds checking.
 atf_unit::FTestrun&  testrun_qFind(u64 t) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 testrun_XrefMaybe(atf_unit::FTestrun &row);
 
 // Start subprocess
@@ -666,7 +666,7 @@ atf_unit::Dbl&       orig_qLast(atf_unit::FPerfSort& parent) __attribute__((noth
 // Return row id of specified element
 u64                  orig_rowid_Get(atf_unit::FPerfSort& parent, atf_unit::Dbl &elem) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 orig_XrefMaybe(atf_unit::Dbl &row);
 
 // Reserve space (this may move memory). Insert N element at the end.
@@ -966,7 +966,7 @@ atf_unit::ShStream&  shstream_qLast(atf_unit::ShStreamAry& parent) __attribute__
 // Return row id of specified element
 u64                  shstream_rowid_Get(atf_unit::ShStreamAry& parent, atf_unit::ShStream &elem) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 shstream_XrefMaybe(atf_unit::ShStream &row);
 
 // proceed to next item
@@ -1237,17 +1237,7 @@ void                 unittest_algo_lib_ParseHex1();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_ParseHex2();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_ParseNum();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_ParseNumber();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_ParseNumber_Empty1();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_ParseNumber_Empty2();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_ParseNumber_Empty3();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_ParseNumber_Empty4();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_ParseNumber_Overflow1();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
@@ -1283,21 +1273,7 @@ void                 unittest_algo_lib_PrintBash();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_PrintCppQuoted();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas1();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas2();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas3();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas4();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas5();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas6();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas7();
-// User-implemented function from gstatic:atf_unit.FDb.unittest
-void                 unittest_algo_lib_PrintDoubleWithCommas8();
+void                 unittest_algo_lib_PrintDoubleWithCommas();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_PrintHex();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
@@ -1306,6 +1282,8 @@ void                 unittest_algo_lib_PrintPad();
 void                 unittest_algo_lib_PrintSsim();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_PrintTime();
+// User-implemented function from gstatic:atf_unit.FDb.unittest
+void                 unittest_algo_lib_PrintWithCommas();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_ReadLine();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
@@ -1351,6 +1329,8 @@ void                 unittest_algo_lib_StringToFile();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_SubstringIndex();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
+void                 unittest_algo_lib_SysEval();
+// User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_Tabulate();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_Tempfile();
@@ -1376,6 +1356,8 @@ void                 unittest_algo_lib_TestStringFmt3();
 void                 unittest_algo_lib_TimeConstants();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_TimeConversion();
+// User-implemented function from gstatic:atf_unit.FDb.unittest
+void                 unittest_algo_lib_TrimZerosRight();
 // User-implemented function from gstatic:atf_unit.FDb.unittest
 void                 unittest_algo_lib_Tuple();
 // User-implemented function from gstatic:atf_unit.FDb.unittest

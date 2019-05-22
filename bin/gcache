@@ -1,10 +1,10 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use English;
 use strict;
 use File::Copy;
 
 # example of command line we want to speed up
-# /usr/bin/time -v g++  -x g++ -Wno-invalid-offsetof -g -D_DEBUG=1 -ffunction-sections -fdata-sections -Wsequence-point -Wno-multichar -Wall -Wshadow -pipe -Wextra -Winit-self -Wmissing-include-dirs -Wmissing-declarations -DUNAME_LINUX -iquote . -msse4.2 -D AOS_SSE42 -Wno-vla -Wno-unused-local-typedefs -Wno-long-long -Wno-strict-aliasing -fpch-preprocess -iquote dflt.debug-x86_64/   -c a.cpp -o   a.o
+# /usr/bin/time -v g++  -x g++ -Wno-invalid-offsetof -g -D_DEBUG=1 -ffunction-sections -fdata-sections -Wsequence-point -Wno-multichar -Wall -Wshadow -pipe -Wextra -Winit-self -Wmissing-include-dirs -Wmissing-declarations -iquote . -msse4.2 -D AOS_SSE42 -Wno-vla -Wno-unused-local-typedefs -Wno-long-long -Wno-strict-aliasing -fpch-preprocess -iquote dflt.debug-x86_64/   -c a.cpp -o   a.o
 
 # strategy:
 # 1. check if command line is optimizable -- needs a -c and -o options
@@ -187,7 +187,7 @@ sub AppendStringToFile($$) {
 # search first 100 lines  of $_[0] for reference to a precompiled header
 # return filename for that header, if applicable
 # Example of preprocess file:
-# #pragma GCC pch_preprocess "dflt.debug-x86_64/include.algo_pch.h.gch"
+# #pragma GCC pch_preprocess "<builddir>/include.algo_pch.h.gch"
 sub FindPchFile($) {
     my $ret="";
     my $nline=0;

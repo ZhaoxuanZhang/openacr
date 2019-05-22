@@ -111,6 +111,10 @@ static void Create() {
         acr_ed::Main_CreateUnittest();
         acr_ed::NeedAmc();
         n_action++;
+    } else if (ch_N(acr_ed::_db.cmdline.normcheck)) {
+        acr_ed::Main_CreateNormcheck();
+        acr_ed::NeedAmc();
+        n_action++;
     } else if (acr_ed::_db.cmdline.finput || acr_ed::_db.cmdline.gstatic) {
         acr_ed::Main_CreateFinput();
         acr_ed::NeedAmc();
@@ -225,7 +229,7 @@ static void ExecuteTransaction() {
     }
     StringToFile(final_script, "temp/acr_ed.ssim", algo_FileFlags_throw);
     DryrunQ dry_run(!acr_ed::_db.cmdline.write);
-    tempstr cmd = tempstr() << (acr_ed::_db.cmdline.write ? "sh" : "cat") << " < temp/acr_ed.ssim";
+    tempstr cmd = tempstr() << (acr_ed::_db.cmdline.write ? "bash" : "cat") << " < temp/acr_ed.ssim";
     // highlight proposed change
     if (SaneTerminalQ()) {
         algo_lib::Replscope R;

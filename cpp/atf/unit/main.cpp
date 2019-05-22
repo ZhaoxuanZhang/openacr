@@ -16,7 +16,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_unit (exe) -- Algo Test Framework: unit tests
+// Target: atf_unit (exe) -- Unit tests (see unittest table)
 // Exceptions: yes
 // Source: cpp/atf/unit/main.cpp
 //
@@ -94,7 +94,8 @@ static void Main_Test(atf_unit::FUnittest &test, int temp_fd) {
         atf::Testrun testrun;
         atf_unit::testrun_CopyOut(*test.c_testrun, testrun);
         out << testrun << eol;
-        write(temp_fd,out.ch_elems,out.ch_n);
+        ssize_t ret = write(temp_fd,out.ch_elems,out.ch_n);
+        (void)ret; // ignore value
     }
     if (do_exit) {
         close(temp_fd);
@@ -115,10 +116,6 @@ void atf_unit::unittest_amc_Unit() {
 void atf_unit::Main() {
     atf_unit::_db.perf_cycle_budget = ToSchedTime(atf_unit::_db.cmdline.perf_secs);
 
-    // create needed directories
-    if (!DirectoryQ(tempstr()<<atf_unit::_db.cmdline.data_dir<<"/atfrun")) {
-        CreateDirRecurse(tempstr()<<atf_unit::_db.cmdline.data_dir<<"/atfrun");
-    }
     ind_beg(atf_unit::_db_unittest_curs,unittest, atf_unit::_db) {
         atf_unit::_db.report.n_test_total++;
         bool match = Regx_Match(atf_unit::_db.cmdline.unittest, unittest.unittest);

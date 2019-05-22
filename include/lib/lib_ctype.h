@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: lib_ctype (lib)
+// Target: lib_ctype (lib) -- Helpful library for reading/writing ctypes as text tuples
 // Exceptions: yes
 // Header: include/lib/lib_ctype.h
 //
@@ -77,7 +77,4 @@ namespace lib_ctype { // update-hdr
     // Results of comparison, mostly represented as a match distance, are saved in MATCH.
     // Search exits early if match.distance exceeds match.maxdist.
     void Match_Tuple(lib_ctype::Match &match, Tuple &expect, Tuple &result);
-
-    // Does nothing
-    void Main();
 }

@@ -76,7 +76,13 @@ void                 builddir_CopyOut(mdbg::FBuilddir &row, dev::Builddir &out) 
 // Copy fields in to row
 void                 builddir_CopyIn(mdbg::FBuilddir &row, dev::Builddir &in) __attribute__((nothrow));
 
+algo::Smallstr50     uname_Get(mdbg::FBuilddir& builddir) __attribute__((__warn_unused_result__, nothrow));
+
+algo::Smallstr50     compiler_Get(mdbg::FBuilddir& builddir) __attribute__((__warn_unused_result__, nothrow));
+
 algo::Smallstr50     cfg_Get(mdbg::FBuilddir& builddir) __attribute__((__warn_unused_result__, nothrow));
+
+algo::Smallstr50     arch_Get(mdbg::FBuilddir& builddir) __attribute__((__warn_unused_result__, nothrow));
 
 // Set all fields to initial values.
 void                 FBuilddir_Init(mdbg::FBuilddir& builddir);
@@ -156,7 +162,6 @@ void                 trace_Print(mdbg::trace & row, algo::cstring &str) __attrib
 struct FDb { // mdbg.FDb
     lpool_Lpblock*     lpool_free[31];          // Lpool levels
     command::mdbg      cmdline;                 //
-    bool               rhel7;                   //   false  Are we running on RHEL7? Compatibility flag
     algo::cstring      script;                  // Output script
     algo::cstring      gdbscript;               // GDB script
     mdbg::FCfg*        cfg_lary[32];            // level array
@@ -199,7 +204,7 @@ bool                 LoadTuplesMaybe(algo::strptr root) __attribute__((nothrow))
 // Load specified ssimfile.
 bool                 LoadSsimfileMaybe(algo::strptr fname) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 _db_XrefMaybe();
 
 // Allocate memory for new default row.
@@ -227,7 +232,7 @@ void                 cfg_RemoveLast() __attribute__((nothrow));
 // 'quick' Access row by row id. No bounds checking.
 mdbg::FCfg&          cfg_qFind(u64 t) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 cfg_XrefMaybe(mdbg::FCfg &row);
 
 // Return true if hash is empty
@@ -270,7 +275,7 @@ void                 builddir_RemoveLast() __attribute__((nothrow));
 // 'quick' Access row by row id. No bounds checking.
 mdbg::FBuilddir&     builddir_qFind(u64 t) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 builddir_XrefMaybe(mdbg::FBuilddir &row);
 
 // cursor points to valid item

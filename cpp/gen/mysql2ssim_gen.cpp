@@ -58,13 +58,13 @@ const char *mysql2ssim_syntax =
 ;
 } // namespace mysql2ssim
 namespace mysql2ssim {
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-static void          SizeCheck();
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    static void          SizeCheck();
 } // end namespace mysql2ssim
 
 // --- mysql2ssim.trace..Print
@@ -153,7 +153,7 @@ bool mysql2ssim::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- mysql2ssim.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool mysql2ssim::_db_XrefMaybe() {
     bool retval = true;
     return retval;
@@ -574,10 +574,7 @@ int main(int argc, char **argv) {
         mysql2ssim::FDb_Init();
         algo_lib::_db.argc = argc;
         algo_lib::_db.argv = argv;
-        algo_lib::_db.epoll_fd = epoll_create(1);
-        if (algo_lib::_db.epoll_fd == -1) {
-            FatalErrorExit("epoll_create");
-        }
+        algo_lib::IohookInit();
         mysql2ssim::MainArgs(algo_lib::_db.argc,algo_lib::_db.argv); // dmmeta.main:mysql2ssim
     } catch(algo_lib::ErrorX &x) {
         prerr("mysql2ssim.error  " << x); // there may be additional hints in DetachBadTags

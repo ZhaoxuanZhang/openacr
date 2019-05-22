@@ -35,7 +35,11 @@
 #include <memory.h>
 #include <locale.h>
 #include <string.h>
+
+#ifdef __linux__
 #include <malloc.h>
+#endif
+
 #include <ctype.h>
 #include <unistd.h>
 #include <time.h>
@@ -43,7 +47,14 @@
 #include <errno.h>
 #include <dirent.h>
 #include <signal.h>
+
+#if _linux__
 #include <byteswap.h>
+#endif
+
+#ifdef __MACH__
+#include <libkern/OSByteOrder.h>
+#endif
 
 #include <sys/time.h>
 #include <sys/ioctl.h>
@@ -51,7 +62,10 @@
 #include <sys/wait.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+
+#ifdef __linux__
 #include <sys/epoll.h>
+#endif
 
 #include <netinet/in.h>
 

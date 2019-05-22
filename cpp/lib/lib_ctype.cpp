@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: lib_ctype (lib)
+// Target: lib_ctype (lib) -- Helpful library for reading/writing ctypes as text tuples
 // Exceptions: yes
 // Source: cpp/lib/lib_ctype.cpp
 //
@@ -316,10 +316,4 @@ void lib_ctype::Match_Tuple(lib_ctype::Match &match, Tuple &expect, Tuple &resul
         match.distance += 1000;// high penalty
         match.nattr++;
     }
-}
-
-// -----------------------------------------------------------------------------
-
-// Does nothing
-void lib_ctype::Main() {
 }

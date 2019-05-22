@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_unit (exe) -- Algo Test Framework: unit tests
+// Target: atf_unit (exe) -- Unit tests (see unittest table)
 // Exceptions: yes
 // Source: cpp/atf/unit/lib_exec.cpp
 //
@@ -112,13 +112,15 @@ void atf_unit::unittest_lib_exec_Dependency() {
     lib_exec::FSyscmd &cmd3        = lib_exec::NewCmd(&cmd2,&glob_end);
     lib_exec::FSyscmd &cmd4        = lib_exec::NewCmd(&cmd3,&glob_end);
     unlink("temp/lib_exec.dependency");
-    cmd1.command = "sleep 1; echo -n 1 >>temp/lib_exec.dependency";
-    cmd2.command = "echo -n 2 >>temp/lib_exec.dependency";
-    cmd3.command = "echo -n 3 >>temp/lib_exec.dependency";
-    cmd4.command = "echo -n 4 >>temp/lib_exec.dependency";
+    // #AL# echo is not portable
+    // especially 'echo -n' -- use printf
+    cmd1.command = "sleep 1; printf %d 1 >>temp/lib_exec.dependency";
+    cmd2.command = "printf %d 2 >>temp/lib_exec.dependency";
+    cmd3.command = "printf %d 3 >>temp/lib_exec.dependency";
+    cmd4.command = "printf %d 4 >>temp/lib_exec.dependency";
     lib_exec::SyscmdExecute();
 
     TESTCMP(glob_end.status, 0);
-    TESTCMP(strptr(algo::FileToString("temp/lib_exec.dependency")), "1234");
+    vrfy_(algo::FileToString("temp/lib_exec.dependency") == "1234");
     unlink("temp/lib_exec.dependency");
 }

@@ -26,12 +26,13 @@
 
 void acr_ed::BeginSandbox() {
     acr_ed::_db.orig_dir = GetCurDir();
-    acr_ed::_db.sandbox_dir = DirFileJoin(GetCurDir(),".testgen");
+    acr_ed::_db.sandbox_dir = DirFileJoin(GetCurDir(),"temp/acr_ed");
+    CreateDirRecurse(acr_ed::_db.sandbox_dir);
     prerr("acr_ed.begin_sandbox"
           <<Keyval("orig_dir",_db.orig_dir)
           <<Keyval("sandbox",_db.sandbox_dir));
-    SysCmd(tempstr()<<"rsync --delete -a .gitignore bin dflt.* cpp"
-           " include extern data diff "<<_db.sandbox_dir, FailokQ(false));
+    SysCmd(tempstr()<<"rsync --delete -a .gitignore bin build cpp"
+           " include extern data diff "<<_db.sandbox_dir<<"/", FailokQ(false));
     EnterSandboxX();
     // prevent git from escaping the sandbox
     SysCmd("git init", FailokQ(false));
@@ -39,7 +40,7 @@ void acr_ed::BeginSandbox() {
     // acr_ed schedules update-gitfile, and there may be gsymbols
     // generated off of gitfile.ssim, so the list of versioned files
     // must be reasonably valid.
-    SysCmd("git add -f bin cpp include extern data diff", FailokQ(false));
+    SysCmd("git add -f --ignore-removal bin cpp include extern data diff", FailokQ(false));
     SysCmd("git commit --allow-empty -m initial-commit", FailokQ(false));
     (void)mkdir("temp", 0755);// may fail
 }

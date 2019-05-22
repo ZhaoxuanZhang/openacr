@@ -18,8 +18,6 @@ dmmeta.xref  field:abt.FDb.ind_arch  inscond:true  via:""
 dmmeta.xref  field:abt.FDb.bh_syscmd  inscond:false  via:""
 dmmeta.xref  field:abt.FDb.zs_srcfile_read  inscond:true  via:""
 dmmeta.xref  field:abt.FDb.zs_sel_target  inscond:false  via:""
-dmmeta.xref  field:abt.FDb.ind_targinstall  inscond:true  via:""
-dmmeta.xref  field:abt.FTarget.c_targinstall  inscond:true  via:abt.FDb.ind_target/dev.Targinstall.target
 dmmeta.xref  field:abt.FTarget.c_targsyslib  inscond:true  via:abt.FDb.ind_target/dev.Targsyslib.target
 dmmeta.xref  field:abt.FDb.ind_syslib  inscond:true  via:""
 dmmeta.xref  field:abt.FTargsyslib.p_syslib  inscond:true  via:abt.FDb.ind_syslib/dev.Targsyslib.syslib
@@ -387,6 +385,7 @@ dmmeta.xref  field:atf_amc.FCascdel.tr_child_atree  inscond:"row.p_parent != &ro
 dmmeta.xref  field:atf_norm.FDb.ind_ssimfile  inscond:true  via:""
 dmmeta.xref  field:atf_norm.FDb.ind_scriptfile  inscond:true  via:""
 dmmeta.xref  field:atf_norm.FDb.ind_ns  inscond:true  via:""
+dmmeta.xref  field:atf_norm.FDb.ind_builddir  inscond:true  via:""
 dmmeta.xref  field:atf_unit.FDb.tr_number  inscond:true  via:""
 dmmeta.xref  field:atf_unit.FDb.ind_unittest  inscond:true  via:""
 dmmeta.xref  field:atf_unit.FUnittest.c_testrun  inscond:true  via:atf_unit.FDb.ind_unittest/atf.Testrun.testrun

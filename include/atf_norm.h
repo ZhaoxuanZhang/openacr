@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_norm (exe) -- Run normalization tests (see normcheck table)
+// Target: atf_norm (exe) -- Normalization tests (see normcheck table)
 // Exceptions: yes
 // Header: include/atf_norm.h
 //
@@ -37,6 +37,14 @@ namespace atf_norm { // update-hdr
     //     To convert this section to a hand-written section, remove the word 'update-hdr' from namespace line.
 
     // -------------------------------------------------------------------
+    // cpp/atf/norm/bootstrap.cpp
+    //
+
+    // Create a bootstrap file for each build dir
+    //     (user-implemented function, prototype is in amc-generated header)
+    // void normcheck_bootstrap();
+
+    // -------------------------------------------------------------------
     // cpp/atf/norm/main.cpp
     //
 
@@ -47,11 +55,19 @@ namespace atf_norm { // update-hdr
     //     (user-implemented function, prototype is in amc-generated header)
     // void normcheck_testamc();
     // void normcheck_unit();
-    // void normcheck_bootstrap();
     // void normcheck_iffy_src();
     // void normcheck_normalize_amc_vis();
     // void normcheck_gitfile();
     void Main();
+
+    // -------------------------------------------------------------------
+    // cpp/atf/norm/readme.cpp
+    //
+
+    // Generate README.md by scanning the readme table
+    // for instructions
+    //     (user-implemented function, prototype is in amc-generated header)
+    // void normcheck_readme();
 
     // -------------------------------------------------------------------
     // cpp/atf/norm/src.cpp -- source file (cpp/, include/) normalizations including amc
@@ -74,7 +90,8 @@ namespace atf_norm { // update-hdr
     // void normcheck_amc();
     // void normcheck_tempcode();
     // void normcheck_stray_gen();
-    // void normcheck_readme();
+    // void normcheck_build_clang();
+    // void normcheck_build_gcc9();
 
     // -------------------------------------------------------------------
     // cpp/atf/norm/ssim.cpp -- ssim database normalizations

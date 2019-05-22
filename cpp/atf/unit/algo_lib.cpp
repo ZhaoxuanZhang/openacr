@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_unit (exe) -- Algo Test Framework: unit tests
+// Target: atf_unit (exe) -- Unit tests (see unittest table)
 // Exceptions: yes
 // Source: cpp/atf/unit/algo_lib.cpp
 //
@@ -545,316 +545,90 @@ void atf_unit::unittest_algo_lib_NToh() {
     vrfy_(be64toh(0x1122334455667788LL) == 0x8877665544332211LL);
 }
 
-// quite simple and straightforward conversion function
-
-static u64 test_atoi(const u8 *str, u32 len) {
-    u64 res = 0;
-    u64 mult = 1;
-    for (; len; --len, mult *= 10) {
-        res += (str[len-1] - '0') * mult;
-    }
-    //prlog(res);
-    return res;
-}
-
-// for reverse string
-
-static u64 test_atoi_be(const u8 *str, u32 len) {
-    u64 res = 0;
-    u64 mult = 1;
-    u32 i;
-    for (i=0; i<len; ++i, mult *= 10) {
-        res += (str[i] - '0') * mult;
-    }
-    //    prlog(res);
-    return res;
-}
-
-// Template function to facilitate all test cases
-
-template <u32 N, typename argtype, typename rettype>
-static void TestStrNumConv(
-                           rettype (*func) (argtype arg, u32 &ok)
-                           ,rettype (*afunc)(argtype arg, u32 len, u32 &ok)
-                           ,rettype (*sfunc)(strptr  arg, u32 &ok)) {
-    u8 buf[N];
-
-    // nominal cases for one running digit on the background of all other digits are the same
-    {
-        u32 i;
-        for (i='0';i<='9';++i) {            // background
-            frep_(j,N) {                    // place
-                memset(buf,i,N);
-                int k;
-                for (k='0';k<='9';++k) {    // digit
-                    u32 ok;
-                    buf[j] = u8(k);
-                    if (func) {
-                        ok=0;
-                        argtype arg;
-                        memcpy(&arg, buf, sizeof(arg));
-                        vrfyeq_(test_atoi_be(buf,N),(*func)(arg,ok));
-                        vrfyeq_(1,ok);
-                    }
-                    if (afunc || sfunc) {
-                        u32 len;
-                        for (len = 1; len < N; ++len) {
-                            if (afunc) {
-                                ok=0;
-                                argtype arg;
-                                memcpy(&arg, buf, sizeof(arg));
-                                vrfyeq_(test_atoi_be(buf+N-len,len),(*afunc)(arg,len,ok));
-                                vrfyeq_(1,ok);
-                            }
-                            if (sfunc) {
-                                ok=0;
-                                vrfyeq_(test_atoi(buf,len),(*sfunc)(strptr((char*)buf,len),ok));
-                                vrfyeq_(1,ok);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // error cases for one running char on the background of all other chars are the same
-    {
-        frep_(i,255) {                      // background
-            frep_(j,N) {                    // place
-                memset(buf,i,N);
-                frep_(k,256) {              // char
-                    bool i_ok = (i >= '0' && i <= '9');
-                    bool k_ok = (k >= '0' && k <= '9');
-                    bool both_nok = !i_ok && !k_ok;
-                    if (i_ok && k_ok) { continue; }
-                    u32 ok;
-                    buf[j] = u8(k);
-                    if (func) {
-                        memset(&ok,0xff,sizeof(ok));
-                        argtype arg;
-                        memcpy(&arg, buf, sizeof(arg));
-                        (*func)(arg,ok);
-                        vrfyeq_(0,ok);
-                    }
-                    if (afunc || sfunc) {
-                        u32 len;
-                        for (len = 0; len < N; ++len) {
-                            if (afunc && ((len > u32(N-j)) || both_nok)) {
-                                memset(&ok,0xff,sizeof(ok));
-                                argtype arg;
-                                memcpy(&arg, buf, sizeof(arg));
-                                (*afunc)(arg,len,ok);
-                                vrfyeq_(0,ok);
-                            }
-                            if (sfunc && ((len > u32(j+1)) || both_nok)) {
-                                memset(&ok,0xff,sizeof(ok));
-                                (*sfunc)(strptr((char*)buf,len),ok);
-                                vrfyeq_(0,ok);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // it looks like it's enough..
-}
-
-// -----------------------------------------------------------------------------
-
-void atf_unit::unittest_algo_lib_ParseNum() {
-    TestStrNumConv<8,u64,u32>(ParseNum8,0,0);
-    TestStrNumConv<4,u32,u32>(ParseNum4,0,0);
-    TestStrNumConv<8,u64,u32>(0,ParseNum8,0);
-    TestStrNumConv<4,u32,u32>(0,ParseNum4,0);
-    TestStrNumConv<8,u64,u32>(0,0,aParseNum8);
-    TestStrNumConv<4,u32,u32>(0,0,aParseNum4);
-    TestStrNumConv<16,int,u64>(0,0,aParseNum16); // 2nd arg is fake
-}
-
-// -----------------------------------------------------------------------------
-//
-// ParseNum4 / ParseNum8 / ParseNum16 / aParseNum8 / aParseNum16
-//
-//
-//
-
-static void TestNumber(u64 n) {
-    tempstr s;
-    s<<n;
-    u32 ok;
-    if (ch_N(s) <= 8) {
-        vrfyeq_(aParseNum8(s, ok), n);
-        vrfyeq_(ok, true);
-    } else {
-        aParseNum8(s, ok);
-        vrfyeq_(ok, false);
-    }
-    if (ch_N(s) <= 4) {
-        vrfyeq_(aParseNum4(s, ok), n);
-        vrfyeq_(ok, true);
-    } else {
-        aParseNum4(s, ok);
-        vrfyeq_(ok, false);
-    }
-    if (ch_N(s) <= 16) {
-        vrfyeq_(aParseNum16(s, ok), n);
-        vrfyeq_(ok, true);
-    } else {
-        aParseNum16(s, ok);
-        vrfyeq_(ok, false);
-    }
-    {
-        char c = char(i32_WeakRandom(256));
-        if (c>='0' && c<='9') {
-            c += 10;
-        }
-        tempstr t;
-        t=s;
-        ch_qFind(t, i32_WeakRandom(ch_N(s))) = c;
-        if (ch_N(t) <= 16) {
-            aParseNum16(t, ok);
-            vrfyeq_(ok, false);
-        }
-        if (ch_N(t) <= 8) {
-            aParseNum8(t, ok);
-            vrfyeq_(ok, false);
-        }
-    }
-}
-
-void atf_unit::unittest_algo_lib_ParseNumber_Empty1() {
-    u32 ok=1;
-    aParseNum8(strptr("ParseNumber_"), ok);
-    vrfyeq_(ok, false);
-}
-
-void atf_unit::unittest_algo_lib_ParseNumber_Empty2() {
-    u32 ok=1;
-    aParseNum16(strptr("ParseNumber_"), ok);
-    vrfyeq_(ok, false);
-}
-
-void atf_unit::unittest_algo_lib_ParseNumber_Empty3() {
-    u32 ok=1;
-    ParseNum8(0, 0, ok);
-    vrfyeq_(ok, false);
-}
-
-void atf_unit::unittest_algo_lib_ParseNumber_Empty4() {
-    u32 ok=1;
-    ParseNum4(0, 0, ok);
-    vrfyeq_(ok, false);
-}
-
 void atf_unit::unittest_algo_lib_ParseNumber_Overflow1() {
     algo::LnumStr7_U32_Base36 x;
-    ch_Set(x, "1234XYZ");
+    ch_SetStrptr(x, "1234XYZ");
     u32 val = ch_GetnumDflt(x,0);
     vrfyeq_(val, 2302984187);
 
-    ch_Set(x, "XYZ1234");
+    ch_SetStrptr(x, "XYZ1234");
     val = ch_GetnumDflt(x,0);
     vrfyeq_(val,u32(0));
 }
 
 void atf_unit::unittest_algo_lib_ParseNumber_Overflow2() {
     algo::LnumStr20_U64 x;
-    ch_Set(x, "1234567891234567890");
+    ch_SetStrptr(x, "1234567891234567890");
     u64 val = ch_GetnumDflt(x,0);
     vrfyeq_(val, u64(1234567891234567890));
 
-    ch_Set(x, "98765432109876543210");
+    ch_SetStrptr(x, "98765432109876543210");
     val = ch_GetnumDflt(x,0);
     vrfyeq_(val, u64(0));
 }
 
 void atf_unit::unittest_algo_lib_ParseNumber_Overflow3() {
     algo::LnumStr22_U64 x;
-    ch_Set(x, "1234567891234567890");
+    ch_SetStrptr(x, "1234567891234567890");
     u64 val = ch_GetnumDflt(x,0);
     vrfyeq_(val, u64(1234567891234567890));
 
-    ch_Set(x, "98765432109876543210");
+    ch_SetStrptr(x, "98765432109876543210");
     val = ch_GetnumDflt(x,0);
     vrfyeq_(val, u64(0));
 }
 
-void atf_unit::unittest_algo_lib_ParseNumber() {
-    frep_(i,10) {
-        TestNumber(i);
+// -----------------------------------------------------------------------------
+
+static void TestDoubleWithCommas(double d, int prec, strptr result) {
+    tempstr t;
+    double_PrintWithCommas(d,t,prec);
+    vrfyeq_(t,result);
+}
+
+void atf_unit::unittest_algo_lib_PrintDoubleWithCommas() {
+    // test integers
+    for (int prec=-1; prec<20; prec++) {
+        TestDoubleWithCommas(0, prec, "0");
+        TestDoubleWithCommas(1, prec, "1");
+        TestDoubleWithCommas(10, prec, "10");
+        TestDoubleWithCommas(12, prec, "12");
+        TestDoubleWithCommas(100  , prec, "100");
+        TestDoubleWithCommas(1000 , prec, "1,000");
+        TestDoubleWithCommas(10000, prec, "10,000");
+        TestDoubleWithCommas(100000, prec, "100,000");
+        TestDoubleWithCommas(101, prec, "101");
+        TestDoubleWithCommas(-101, prec, "-101");
+        TestDoubleWithCommas(-1001, prec, "-1,001");
+        TestDoubleWithCommas(1001, prec, "1,001");
+        TestDoubleWithCommas(10001, prec, "10,001");
+        TestDoubleWithCommas(100001, prec, "100,001");
+        TestDoubleWithCommas(12341234, prec, "12,341,234");
     }
 
-    for (u64 x=1; x<=1000000000000000000; x*=10) {
-        TestNumber(x);
-    }
+    TestDoubleWithCommas(0.1, 0, "0");
+    TestDoubleWithCommas(0.1, 1, "0.1");
+    TestDoubleWithCommas(0.1, 2, "0.1");
+    TestDoubleWithCommas(0.1, 3, "0.1");
 
-    rep_(i,64) {
-        TestNumber(u64(1)<<i);
-    }
+    TestDoubleWithCommas(-0.000001, 0, "-0");
+    TestDoubleWithCommas(-0.000001, 1, "-0");
+    TestDoubleWithCommas(-0.000001, 2, "-0");
+    TestDoubleWithCommas(-0.000001, 3, "-0");
+    TestDoubleWithCommas(-0.000001, 4, "-0");
+    TestDoubleWithCommas(-0.000001, 5, "-0");
+    TestDoubleWithCommas(-0.000001, 6, "-0.000001");
 
-    rep_(i,10000) {
-        TestNumber(i32_WeakRandom(INT_MAX) & ((1<<i32_WeakRandom(32))-1));
-    }
-}
+    TestDoubleWithCommas(12.0001, 0, "12");
+    TestDoubleWithCommas(12.0001, 1, "12");
+    TestDoubleWithCommas(12.0001, 2, "12");
+    TestDoubleWithCommas(12.0001, 3, "12");
+    TestDoubleWithCommas(12.0001, 4, "12.0001");
 
-static void TestString(strptr before, strptr printed) {
-    tempstr in;
-    tempstr out;
-    out << MaybeSpace; PrintAttr(out, "", before);
-    vrfy_(out == printed);
-    StringIter iter(out);
-    cstring_ReadCmdarg(in, iter, false);
-}
+    TestDoubleWithCommas(12341234.333, 1, "12,341,234.3");
+    TestDoubleWithCommas(12341234.333, 5, "12,341,234.333");
 
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas1() {
-    tempstr t;
-    double_PrintWithCommas(0.1, t, 1);
-    vrfyeq_(t, "0.1");
-}
-
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas2() {
-    tempstr t;
-    double_PrintWithCommas(0, t, 0);
-    vrfyeq_(t, "0");
-}
-
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas3() {
-    tempstr t;
-    double_PrintWithCommas(12, t, 5);
-    vrfyeq_(t, "12");
-}
-
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas4() {
-    tempstr t;
-    double_PrintWithCommas(101, t, 5);
-    vrfyeq_(t, "101");
-}
-
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas5() {
-    tempstr t;
-    double_PrintWithCommas(1001, t, 5);
-    vrfyeq_(t, "1,001");
-}
-
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas6() {
-    tempstr t;
-    double_PrintWithCommas(10001, t, 5);
-    vrfyeq_(t, "10,001");
-}
-
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas7() {
-    tempstr t;
-    double_PrintWithCommas(100001, t, 5);
-    vrfyeq_(t, "100,001");
-}
-
-void atf_unit::unittest_algo_lib_PrintDoubleWithCommas8() {
-    tempstr t;
-    double_PrintWithCommas(12341234, t, 5);
-    vrfyeq_(t, "12,341,234");
+    TestDoubleWithCommas(1000.0*1000*1000*1000*1000, 0, "1,000,000,000,000,000");
 }
 
 // -----------------------------------------------------------------------------
@@ -921,6 +695,18 @@ void atf_unit::unittest_algo_lib_PrintHex() {
     vrfyeq_(str,"0xffffffffffffffff");
 }
 
+// -----------------------------------------------------------------------------
+
+static void TestString(strptr before, strptr printed) {
+    tempstr in;
+    tempstr out;
+    out << MaybeSpace;
+    PrintAttr(out, "", before);
+    vrfy_(out == printed);
+    StringIter iter(out);
+    cstring_ReadCmdarg(in, iter, false);
+}
+
 void atf_unit::unittest_algo_lib_TestString() {
     // test other strings -- non-printable characteres, apostrophe, etc.
     TestString(""         , "\"\""           );
@@ -952,118 +738,6 @@ void atf_unit::unittest_algo_lib_TestStringFmt3() {
     u128 val = u128(12345678901234567890ULL) * 1000000000000000000ULL;
     u128_Print(val,s);
     vrfyeq_(s, "12345678901234567890000000000000000000");
-}
-
-//*****------------------------------------------------ Oct 8 1999 ------*****
-
-static bool RegxMatch(strptr expr, strptr str) {
-    algo_lib::Regx regx;
-    Regx_ReadDflt(regx,expr);
-    return Regx_Match(regx,str);
-}
-static bool RegxMatchShell(strptr expr, strptr str) {
-    algo_lib::Regx regx;
-    Regx_ReadShell(regx,expr,true);
-    return Regx_Match(regx,str);
-}
-static bool RegxMatchSql(strptr expr, strptr str) {
-    algo_lib::Regx regx;
-    Regx_ReadSql(regx,expr,true);
-    return Regx_Match(regx,str);
-}
-
-// --------------------------------------------------------------------------------
-
-void atf_unit::unittest_algo_lib_Regx() {
-    vrfyeq_(RegxMatch("", ""), true);// empty regx matches empty string
-    vrfyeq_(RegxMatch("", "x"), false);// empty regx matches empty string only
-    vrfyeq_(RegxMatch(".*", "abcd")                     , true);
-    vrfyeq_(RegxMatch("a.*", "abcd")                     , true);
-    vrfyeq_(RegxMatch("ab.*", "abcd")                     , true);
-    vrfyeq_(RegxMatch("abc.*", "abcd")                     , true);
-    vrfyeq_(RegxMatch("abcd.*", "abcd")                     , true);
-    vrfyeq_(RegxMatch("abcd.*", "abcde")                     , true);
-    vrfyeq_(RegxMatch(".+", "abcd")                     , true);
-    vrfyeq_(RegxMatch(".+", ""    )                     , false);
-    vrfyeq_(RegxMatch("ab+c", "abc")                    , true);
-    vrfyeq_(RegxMatch("ab+c", "abbbbbbbbbbbbbbbbbbbbc") , true);
-    vrfyeq_(RegxMatch("abcd", "abcd")                   , true);
-    vrfyeq_(RegxMatch("a(b|c)d", "acd")                 , true);
-    vrfyeq_(RegxMatch("a(b|c)d", "abd")                 , true);
-    vrfyeq_(RegxMatch("abcd", "abc")                    , false);
-    vrfyeq_(RegxMatch(".*", "")                 , true);
-    vrfyeq_(RegxMatch(".*", ".*")                 , true);
-    vrfyeq_(RegxMatch(".*", "\x80\xff")                 , true);
-    vrfyeq_(RegxMatch("\x82\x83", "\x82\x83")           , true);
-    vrfyeq_(RegxMatch("\x82", "\x81")                   , false);
-    vrfyeq_(RegxMatch("[\x81-\x85]+", "\x82\x83")       , true);
-    vrfyeq_(RegxMatch("[\x81-\x85]", "\x80")            , false);
-
-    vrfyeq_(RegxMatch("(", ""), true);// bad regx -- but must match
-    vrfyeq_(RegxMatch("(((", ""), true);// bad regx -- but must match
-    vrfyeq_(RegxMatch(")", ")"), true);// bad regx -- but must match
-    vrfyeq_(RegxMatch("[", "["), true);// bad regx -- but must match
-    vrfyeq_(RegxMatch("]", "]"), true);// bad regx -- but must match
-    vrfyeq_(RegxMatch("]](", "]]"), true);// bad regx -- but must match
-    vrfyeq_(RegxMatch("[a-b", "[a-b"), true);// bad regx -- but must match
-    vrfyeq_(RegxMatch("", ""), true);// bad regx -- but must match
-
-    vrfyeq_(RegxMatchShell("*makefile*", "temp_makefile"), true);
-    vrfyeq_(RegxMatchShell("*makefile*", "makefile"), true);
-    vrfyeq_(RegxMatchShell("*make.ile", "makefile"), false);// should not match -- . is not special
-    vrfyeq_(RegxMatchShell("%", "makefile"), false);// should not match -- . is not special
-
-    vrfyeq_(RegxMatchSql("", ""), true);// empty regx matches empty string
-    vrfyeq_(RegxMatchSql("", "x"), false);// empty regx matches empty string only
-    vrfyeq_(RegxMatchSql("_", "a"), true);// any char
-    vrfyeq_(RegxMatchSql("\\_", "a"), false);// escaped underscore -> real char
-    vrfyeq_(RegxMatchSql("%", ""), true);
-    vrfyeq_(RegxMatchSql("%", "a"), true);
-    vrfyeq_(RegxMatchSql("%%%%%%", "a"), true);
-    vrfyeq_(RegxMatchSql("asdf%f", "asdfasdfasdf"), true);// wildcard
-    vrfyeq_(RegxMatchSql("asdf\\%f", "asdfasdfasdf"), false);// escaped wildcard
-    vrfyeq_(RegxMatchSql("asdf\\%f", "asdf%f"), true);// should be ok
-    vrfyeq_(RegxMatchSql("(a|b)", "a"), true);// should be ok
-    vrfyeq_(RegxMatchSql("(a|b)", "b"), true);// should be ok
-    vrfyeq_(RegxMatchSql("(a|b)", "c"), false);// should be ok
-    vrfyeq_(RegxMatchSql("(a|b)(d|e)", "ae"), true);// should be ok
-    vrfyeq_(RegxMatchSql("(a|b)(d|e)", "bd"), true);// should be ok
-    vrfyeq_(RegxMatchSql("(a|b)(d|e)", "bd"), true);// should be ok
-}
-
-// -----------------------------------------------------------------------------
-
-static void ShortCircuitMatch(strptr regx_str, strptr str, int njunk, strptr junkstr, bool expect, int maxcycles) {
-    algo_lib::Regx regx;
-    Regx_ReadDflt(regx,regx_str);
-    // a megabyte of junk
-    cstring test(str);
-    for (int i=0; i<njunk; i++) {
-        test << junkstr;
-    }
-    bool good =false;
-    for (int iter=0; iter<100; iter++) {
-        u64 start=get_cycles();
-        bool result=Regx_Match(regx,test);
-        u64 end=get_cycles();
-        TESTCMP(result,expect);
-        if (start + maxcycles > end) {
-            good=true;
-            break;
-        }
-    }
-    TESTCMP(good,true);
-}
-
-// --------------------------------------------------------------------------------
-
-// Test that matching a huge string with a regex that
-// ends in .* is fast.
-void atf_unit::unittest_algo_lib_RegxShortCircuit() {
-    ShortCircuitMatch("abcd.*", "abcde", 1000000, "x", true, 10000);
-    ShortCircuitMatch("abcd.*.*", "abcdef", 1000000, "x", true, 10000);
-    ShortCircuitMatch(".*", "abcde", 1000000, "x", true, 10000);
-    ShortCircuitMatch("", "abcde", 1000000, "x", false, 10000);// must quickly NOT match this
 }
 
 // -----------------------------------------------------------------------------
@@ -1842,34 +1516,6 @@ void atf_unit::unittest_algo_lib_Tempfile() {
 
 // --------------------------------------------------------------------------------
 
-void atf_unit::unittest_algo_lib_RegxReadTwice() {
-    // Read a regx twice. It should continue to work
-    algo_lib::Regx regx;
-    Regx_ReadSql(regx, "a", true);
-    vrfyeq_(Regx_Match(regx, "a"), true);
-    vrfyeq_(Regx_Match(regx, "b"), false);
-
-    Regx_ReadSql(regx, "b", true);
-    vrfyeq_(Regx_Match(regx, "a"), false);
-    vrfyeq_(Regx_Match(regx, "b"), true);
-}
-
-// --------------------------------------------------------------------------------
-
-void atf_unit::unittest_algo_lib_RegxReadTwice2() {
-    // Read a regx twice. It should continue to work
-    algo_lib::Regx regx;
-    Regx_ReadSql(regx, "%", false);
-    vrfyeq_(Regx_Match(regx, "aasdfasdf"), true);
-    vrfyeq_(Regx_Match(regx, "asdfasdf"), true);
-
-    Regx_ReadSql(regx, "b", true);
-    vrfyeq_(Regx_Match(regx, "a"), false);
-    vrfyeq_(Regx_Match(regx, "b"), true);
-}
-
-// --------------------------------------------------------------------------------
-
 static void TestNextSep(strptr before, char sep, strptr after, strptr left) {
     strptr actual_after=before,actual_left;
     algo::NextSep(actual_after,sep,actual_left);
@@ -2030,9 +1676,24 @@ void atf_unit::unittest_algo_lib_U128PrintHex() {
 // --------------------------------------------------------------------------------
 
 void atf_unit::unittest_algo_lib_FileToString() {
+    CreateDirRecurse("temp");
+
+    // test basic operation
+    {
+        algo_lib::FTempfile tempfile;
+        TempfileInitX(tempfile,"x");
+
+        cstring str("blah\n");
+        StringToFile(str,tempfile.filename);
+        vrfy_(FileToString(tempfile.filename) == str);
+    }
+
+#ifdef __linux__
     // check that FileToString can read /proc/cpuinfo
+    // mac doesn't have these files.
     vrfyeq_(FileToString("/proc/iomem")
             ,SysEval("cat /proc/iomem",FailokQ(true),1024*1024*10));
+#endif
 }
 
 // --------------------------------------------------------------------------------
@@ -2454,24 +2115,20 @@ void atf_unit::unittest_algo_lib_AvlvsMap(){
 // --------------------------------------------------------------------------------
 
 static void CheckSleep(double sec) {
-    for (int i=0; i<10; i++) {
+    bool success=false;
+    for (int i=0; i<10 && !success; i++,sleep(1)) {
         SchedTime c(get_cycles());
         algo::SleepMsec(sec*1000.0);
         SchedTime c2(get_cycles());
         double elapsed = ElapsedSecs(c,c2);
         //some servers only give you 10% accuracy in sleep
-        bool success = elapsed >= sec*0.75 && elapsed <= sec*1.25;
-        prerr("atf_unit.check_sleep"
-              <<Keyval("want",sec)
-              <<Keyval("elapsed",elapsed)
-              <<Keyval("success",success));
-        if (success) {
-            return;
-        }
-        // wait a little
-        sleep(1);
+        success = elapsed >= sec*0.75 && elapsed <= sec*1.25;
+        verblog("atf_unit.check_sleep"
+                <<Keyval("want",sec)
+                <<Keyval("elapsed",elapsed)
+                <<Keyval("success",success));
     }
-    vrfy(0,"SleepMsec test failed");
+    vrfy(success,"SleepMsec test failed");
 }
 
 void atf_unit::unittest_algo_lib_Sleep() {
@@ -2507,4 +2164,83 @@ void atf_unit::unittest_algo_lib_strptr_Eq() {
             vrfy_(StrEqual(a,b,false));
         }
     }
+}
+
+// -----------------------------------------------------------------------------
+
+static void CheckSysEval(strptr cmd, strptr expect_output, int limit, bool expect_success) {
+    bool test_ok=true;
+    cstring out;
+    // test command
+    try {
+        out=SysEval(cmd,FailokQ(true),limit);
+        test_ok = out==expect_output;
+        out="";
+    } catch(algo_lib::ErrorX &x) {
+        test_ok=expect_success==false;
+    }
+    // re-test same command with FailokQ(false)
+    if (test_ok && !expect_success) {
+        try {
+            out=SysEval(cmd,FailokQ(false),limit);
+            test_ok = false;// must have thrown!!
+        } catch(algo_lib::ErrorX &x) {
+            test_ok = true;
+        }
+    }
+    vrfy(test_ok,
+         tempstr("syseval_fail")
+         <<Keyval("cmd",cmd)
+         <<Keyval("expect_output",expect_output)
+         <<Keyval("output",out)
+         <<Keyval("limit",limit));
+}
+
+void atf_unit::unittest_algo_lib_SysEval() {
+    CheckSysEval("printf %s blah","blah",10,true);
+    CheckSysEval("printf %s longstring","",1,false);// will fail because of output limit
+    CheckSysEval("cat /dev/zero","",100000,false);// will fail because of output limit
+    CheckSysEval("echo blah","blah\n",5,true);// check newline
+}
+
+// --------------------------------------------------------------------------------
+
+static void TestTrimZeros(strptr const_str, strptr result) {
+    tempstr str(const_str);
+    strptr buf(str);
+    algo::strptr_TrimZerosRight(buf);
+    vrfy_(buf==result);
+}
+
+void atf_unit::unittest_algo_lib_TrimZerosRight() {
+    TestTrimZeros(""          , "");
+    TestTrimZeros("0"         , "0");
+    TestTrimZeros("0.1"       , "0.1");
+    TestTrimZeros("0.0"       , "0");
+    TestTrimZeros("12345.000" , "12345");
+    TestTrimZeros("-0"        , "-0");// not touched
+    TestTrimZeros(".0"        , "0");
+    TestTrimZeros("-.0"       , "0");
+    TestTrimZeros("-0.0"      , "-0");
+    TestTrimZeros("-10.0"     , "-10");
+}
+
+// --------------------------------------------------------------------------------
+
+static void TestPrintWithCommas(strptr str, strptr result) {
+    tempstr out;
+    algo::strptr_PrintWithCommas(str,out);
+    vrfy_(out==result);
+}
+
+void atf_unit::unittest_algo_lib_PrintWithCommas() {
+    TestPrintWithCommas("0","0");
+    TestPrintWithCommas("11","11");
+    TestPrintWithCommas("222","222");
+    TestPrintWithCommas("3333","3,333");
+    TestPrintWithCommas("4567.3","4,567.3");
+    TestPrintWithCommas("4567.3","4,567.3");
+    TestPrintWithCommas("12341234123412341234123412341234","12,341,234,123,412,341,234,123,412,341,234");
+    TestPrintWithCommas("2341234123412341234123412341234","2,341,234,123,412,341,234,123,412,341,234");
+    TestPrintWithCommas("1.11111","1.11111");
 }

@@ -42,14 +42,6 @@ struct FDb { // lib_git.FDb
     lib_git::trace   trace;   //
 };
 
-// Main function
-void                 MainArgs(int argc, char **argv);
-// Main loop.
-void                 MainLoop();
-// Main step
-void                 Step();
-// Main function
-void                 Main();
 void                 StaticCheck();
 // Parse strptr into known type and add to database.
 // Return value is true unless an error occurs. If return value is false, algo_lib::_db.errtext has error text
@@ -59,7 +51,7 @@ bool                 LoadTuplesMaybe(algo::strptr root) __attribute__((nothrow))
 // Load specified ssimfile.
 bool                 LoadSsimfileMaybe(algo::strptr fname) __attribute__((nothrow));
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool                 _db_XrefMaybe();
 
 // Set all fields to initial values.

@@ -4,13 +4,12 @@
 .ccache
 .gcache
 .svn
-.testgen
 .tempgit
+.testgen
 \#*
+build/
 cscope.out
-dflt.*-x86_64
-lock
+lock/
 tags
-temp
+temp/
 vmlinux*
-

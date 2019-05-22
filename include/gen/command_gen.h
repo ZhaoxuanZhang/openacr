@@ -15,7 +15,7 @@
 
 enum command_FieldIdEnum {                    // command.FieldId.value
      command_FieldId_target            = 0
-    ,command_FieldId_in_dir            = 1
+    ,command_FieldId_in                = 1
     ,command_FieldId_out_dir           = 2
     ,command_FieldId_cfg               = 3
     ,command_FieldId_compiler          = 4
@@ -25,166 +25,164 @@ enum command_FieldIdEnum {                    // command.FieldId.value
     ,command_FieldId_list              = 8
     ,command_FieldId_listincl          = 9
     ,command_FieldId_build             = 10
-    ,command_FieldId_line              = 11
-    ,command_FieldId_preproc           = 12
-    ,command_FieldId_clean             = 13
-    ,command_FieldId_dry_run           = 14
-    ,command_FieldId_maxjobs           = 15
-    ,command_FieldId_printcmd          = 16
-    ,command_FieldId_force             = 17
-    ,command_FieldId_testgen           = 18
-    ,command_FieldId_install           = 19
-    ,command_FieldId_coverity          = 20
-    ,command_FieldId_release           = 21
-    ,command_FieldId_package           = 22
-    ,command_FieldId_nover             = 23
-    ,command_FieldId_maxerr            = 24
-    ,command_FieldId_disas             = 25
-    ,command_FieldId_report            = 26
-    ,command_FieldId_query             = 27
-    ,command_FieldId_select            = 28
-    ,command_FieldId_del               = 29
-    ,command_FieldId_insert            = 30
-    ,command_FieldId_replace           = 31
-    ,command_FieldId_merge             = 32
-    ,command_FieldId_unused            = 33
-    ,command_FieldId_trunc             = 34
-    ,command_FieldId_check             = 35
-    ,command_FieldId_maxshow           = 36
-    ,command_FieldId_write             = 37
-    ,command_FieldId_rename            = 38
-    ,command_FieldId_nup               = 39
-    ,command_FieldId_ndown             = 40
-    ,command_FieldId_xref              = 41
-    ,command_FieldId_fldfunc           = 42
-    ,command_FieldId_maxgroup          = 43
-    ,command_FieldId_pretty            = 44
-    ,command_FieldId_tree              = 45
-    ,command_FieldId_loose             = 46
-    ,command_FieldId_my                = 47
-    ,command_FieldId_schema_dir        = 48
-    ,command_FieldId_e                 = 49
-    ,command_FieldId_b                 = 50
-    ,command_FieldId_t                 = 51
-    ,command_FieldId_rowid             = 52
-    ,command_FieldId_in                = 53
-    ,command_FieldId_cmt               = 54
-    ,command_FieldId_print             = 55
-    ,command_FieldId_cmd               = 56
-    ,command_FieldId_field             = 57
-    ,command_FieldId_regxof            = 58
-    ,command_FieldId_meta              = 59
-    ,command_FieldId_point             = 60
-    ,command_FieldId_type              = 61
-    ,command_FieldId_create            = 62
-    ,command_FieldId_finput            = 63
-    ,command_FieldId_srcfile           = 64
-    ,command_FieldId_gstatic           = 65
-    ,command_FieldId_indexed           = 66
-    ,command_FieldId_nstype            = 67
-    ,command_FieldId_ctype             = 68
-    ,command_FieldId_pooltype          = 69
-    ,command_FieldId_ssimfile          = 70
-    ,command_FieldId_subset            = 71
-    ,command_FieldId_subset2           = 72
-    ,command_FieldId_separator         = 73
-    ,command_FieldId_arg               = 74
-    ,command_FieldId_dflt              = 75
-    ,command_FieldId_anon              = 76
-    ,command_FieldId_bigend            = 77
-    ,command_FieldId_cascdel           = 78
-    ,command_FieldId_before            = 79
-    ,command_FieldId_substr            = 80
-    ,command_FieldId_srcfield          = 81
-    ,command_FieldId_fstep             = 82
-    ,command_FieldId_inscond           = 83
-    ,command_FieldId_reftype           = 84
-    ,command_FieldId_hashfld           = 85
-    ,command_FieldId_sortfld           = 86
-    ,command_FieldId_unittest          = 87
-    ,command_FieldId_cppfunc           = 88
-    ,command_FieldId_via               = 89
-    ,command_FieldId_showcpp           = 90
-    ,command_FieldId_comment           = 91
-    ,command_FieldId_sandbox           = 92
-    ,command_FieldId_ns                = 93
-    ,command_FieldId_data              = 94
-    ,command_FieldId_sigcheck          = 95
-    ,command_FieldId_data_dir          = 96
-    ,command_FieldId_related           = 97
-    ,command_FieldId_notssimfile       = 98
-    ,command_FieldId_checkable         = 99
-    ,command_FieldId_nsdb              = 100
-    ,command_FieldId_fkey              = 101
-    ,command_FieldId_start             = 102
-    ,command_FieldId_stop              = 103
-    ,command_FieldId_abort             = 104
-    ,command_FieldId_shell             = 105
-    ,command_FieldId_serv              = 106
-    ,command_FieldId_proto             = 107
-    ,command_FieldId_trace             = 108
-    ,command_FieldId_fconst            = 109
-    ,command_FieldId_gconst            = 110
-    ,command_FieldId_key               = 111
-    ,command_FieldId_include           = 112
-    ,command_FieldId_dot               = 113
-    ,command_FieldId_xns               = 114
-    ,command_FieldId_noinput           = 115
-    ,command_FieldId_render            = 116
-    ,command_FieldId_amctest           = 117
-    ,command_FieldId_normcheck         = 118
-    ,command_FieldId_nofork            = 119
-    ,command_FieldId_debug             = 120
-    ,command_FieldId_perf_secs         = 121
-    ,command_FieldId_pertest_timeout   = 122
-    ,command_FieldId_q                 = 123
-    ,command_FieldId_complooo          = 124
-    ,command_FieldId_args              = 125
-    ,command_FieldId_manywin           = 126
-    ,command_FieldId_root              = 127
-    ,command_FieldId_attach            = 128
-    ,command_FieldId_catchthrow        = 129
-    ,command_FieldId_tui               = 130
-    ,command_FieldId_bcmd              = 131
-    ,command_FieldId_emacs             = 132
-    ,command_FieldId_follow_child      = 133
-    ,command_FieldId_py                = 134
-    ,command_FieldId_writessimfile     = 135
-    ,command_FieldId_url               = 136
-    ,command_FieldId_tables            = 137
-    ,command_FieldId_schema            = 138
-    ,command_FieldId_nologo            = 139
-    ,command_FieldId_baddbok           = 140
-    ,command_FieldId_targsrc           = 141
-    ,command_FieldId_name              = 142
-    ,command_FieldId_body              = 143
-    ,command_FieldId_func              = 144
-    ,command_FieldId_nextfile          = 145
-    ,command_FieldId_other             = 146
-    ,command_FieldId_updateproto       = 147
-    ,command_FieldId_listfunc          = 148
-    ,command_FieldId_iffy              = 149
-    ,command_FieldId_gen               = 150
-    ,command_FieldId_showloc           = 151
-    ,command_FieldId_showstatic        = 152
-    ,command_FieldId_showsortkey       = 153
-    ,command_FieldId_sortname          = 154
-    ,command_FieldId_update_authors    = 155
-    ,command_FieldId_linelim           = 156
-    ,command_FieldId_strayfile         = 157
-    ,command_FieldId_capture           = 158
-    ,command_FieldId_expand            = 159
-    ,command_FieldId_ignoreQuote       = 160
-    ,command_FieldId_maxpacket         = 161
-    ,command_FieldId_db                = 162
-    ,command_FieldId_createdb          = 163
-    ,command_FieldId_str               = 164
-    ,command_FieldId_tocamelcase       = 165
-    ,command_FieldId_tolowerunder      = 166
-    ,command_FieldId_value             = 167
+    ,command_FieldId_preproc           = 11
+    ,command_FieldId_clean             = 12
+    ,command_FieldId_dry_run           = 13
+    ,command_FieldId_maxjobs           = 14
+    ,command_FieldId_printcmd          = 15
+    ,command_FieldId_force             = 16
+    ,command_FieldId_testgen           = 17
+    ,command_FieldId_install           = 18
+    ,command_FieldId_coverity          = 19
+    ,command_FieldId_package           = 20
+    ,command_FieldId_maxerr            = 21
+    ,command_FieldId_disas             = 22
+    ,command_FieldId_report            = 23
+    ,command_FieldId_query             = 24
+    ,command_FieldId_select            = 25
+    ,command_FieldId_del               = 26
+    ,command_FieldId_insert            = 27
+    ,command_FieldId_replace           = 28
+    ,command_FieldId_merge             = 29
+    ,command_FieldId_unused            = 30
+    ,command_FieldId_trunc             = 31
+    ,command_FieldId_check             = 32
+    ,command_FieldId_maxshow           = 33
+    ,command_FieldId_write             = 34
+    ,command_FieldId_rename            = 35
+    ,command_FieldId_nup               = 36
+    ,command_FieldId_ndown             = 37
+    ,command_FieldId_xref              = 38
+    ,command_FieldId_fldfunc           = 39
+    ,command_FieldId_maxgroup          = 40
+    ,command_FieldId_pretty            = 41
+    ,command_FieldId_tree              = 42
+    ,command_FieldId_loose             = 43
+    ,command_FieldId_my                = 44
+    ,command_FieldId_schema            = 45
+    ,command_FieldId_e                 = 46
+    ,command_FieldId_b                 = 47
+    ,command_FieldId_t                 = 48
+    ,command_FieldId_rowid             = 49
+    ,command_FieldId_cmt               = 50
+    ,command_FieldId_print             = 51
+    ,command_FieldId_cmd               = 52
+    ,command_FieldId_field             = 53
+    ,command_FieldId_regxof            = 54
+    ,command_FieldId_meta              = 55
+    ,command_FieldId_line              = 56
+    ,command_FieldId_point             = 57
+    ,command_FieldId_type              = 58
+    ,command_FieldId_create            = 59
+    ,command_FieldId_finput            = 60
+    ,command_FieldId_srcfile           = 61
+    ,command_FieldId_gstatic           = 62
+    ,command_FieldId_indexed           = 63
+    ,command_FieldId_nstype            = 64
+    ,command_FieldId_ctype             = 65
+    ,command_FieldId_pooltype          = 66
+    ,command_FieldId_ssimfile          = 67
+    ,command_FieldId_subset            = 68
+    ,command_FieldId_subset2           = 69
+    ,command_FieldId_separator         = 70
+    ,command_FieldId_arg               = 71
+    ,command_FieldId_dflt              = 72
+    ,command_FieldId_anon              = 73
+    ,command_FieldId_bigend            = 74
+    ,command_FieldId_cascdel           = 75
+    ,command_FieldId_before            = 76
+    ,command_FieldId_substr            = 77
+    ,command_FieldId_srcfield          = 78
+    ,command_FieldId_fstep             = 79
+    ,command_FieldId_inscond           = 80
+    ,command_FieldId_reftype           = 81
+    ,command_FieldId_hashfld           = 82
+    ,command_FieldId_sortfld           = 83
+    ,command_FieldId_unittest          = 84
+    ,command_FieldId_normcheck         = 85
+    ,command_FieldId_cppfunc           = 86
+    ,command_FieldId_via               = 87
+    ,command_FieldId_showcpp           = 88
+    ,command_FieldId_comment           = 89
+    ,command_FieldId_sandbox           = 90
+    ,command_FieldId_ns                = 91
+    ,command_FieldId_data              = 92
+    ,command_FieldId_sigcheck          = 93
+    ,command_FieldId_data_dir          = 94
+    ,command_FieldId_related           = 95
+    ,command_FieldId_notssimfile       = 96
+    ,command_FieldId_checkable         = 97
+    ,command_FieldId_nsdb              = 98
+    ,command_FieldId_fkey              = 99
+    ,command_FieldId_start             = 100
+    ,command_FieldId_stop              = 101
+    ,command_FieldId_abort             = 102
+    ,command_FieldId_shell             = 103
+    ,command_FieldId_serv              = 104
+    ,command_FieldId_in_dir            = 105
+    ,command_FieldId_proto             = 106
+    ,command_FieldId_trace             = 107
+    ,command_FieldId_fconst            = 108
+    ,command_FieldId_gconst            = 109
+    ,command_FieldId_key               = 110
+    ,command_FieldId_include           = 111
+    ,command_FieldId_dot               = 112
+    ,command_FieldId_xns               = 113
+    ,command_FieldId_noinput           = 114
+    ,command_FieldId_render            = 115
+    ,command_FieldId_amctest           = 116
+    ,command_FieldId_nofork            = 117
+    ,command_FieldId_debug             = 118
+    ,command_FieldId_perf_secs         = 119
+    ,command_FieldId_pertest_timeout   = 120
+    ,command_FieldId_q                 = 121
+    ,command_FieldId_complooo          = 122
+    ,command_FieldId_args              = 123
+    ,command_FieldId_manywin           = 124
+    ,command_FieldId_root              = 125
+    ,command_FieldId_attach            = 126
+    ,command_FieldId_catchthrow        = 127
+    ,command_FieldId_tui               = 128
+    ,command_FieldId_bcmd              = 129
+    ,command_FieldId_emacs             = 130
+    ,command_FieldId_follow_child      = 131
+    ,command_FieldId_py                = 132
+    ,command_FieldId_writessimfile     = 133
+    ,command_FieldId_url               = 134
+    ,command_FieldId_tables            = 135
+    ,command_FieldId_nologo            = 136
+    ,command_FieldId_baddbok           = 137
+    ,command_FieldId_targsrc           = 138
+    ,command_FieldId_name              = 139
+    ,command_FieldId_body              = 140
+    ,command_FieldId_func              = 141
+    ,command_FieldId_nextfile          = 142
+    ,command_FieldId_other             = 143
+    ,command_FieldId_updateproto       = 144
+    ,command_FieldId_listfunc          = 145
+    ,command_FieldId_iffy              = 146
+    ,command_FieldId_gen               = 147
+    ,command_FieldId_showloc           = 148
+    ,command_FieldId_showstatic        = 149
+    ,command_FieldId_showsortkey       = 150
+    ,command_FieldId_sortname          = 151
+    ,command_FieldId_update_authors    = 152
+    ,command_FieldId_indent            = 153
+    ,command_FieldId_linelim           = 154
+    ,command_FieldId_strayfile         = 155
+    ,command_FieldId_capture           = 156
+    ,command_FieldId_expand            = 157
+    ,command_FieldId_ignoreQuote       = 158
+    ,command_FieldId_maxpacket         = 159
+    ,command_FieldId_db                = 160
+    ,command_FieldId_createdb          = 161
+    ,command_FieldId_str               = 162
+    ,command_FieldId_tocamelcase       = 163
+    ,command_FieldId_tolowerunder      = 164
+    ,command_FieldId_value             = 165
 };
 
-enum { command_FieldIdEnum_N = 168 };
+enum { command_FieldIdEnum_N = 166 };
 
 namespace command { struct FieldId; }
 namespace command { struct Protocol; }
@@ -213,14 +211,14 @@ namespace command { struct atf_norm; }
 namespace command { struct atf_norm_proc; }
 namespace command { struct atf_unit; }
 namespace command { struct atf_unit_proc; }
+namespace command { struct bash; }
+namespace command { struct bash_proc; }
 namespace command { struct lib_ctype; }
 namespace command { struct lib_exec; }
 namespace command { struct mdbg; }
 namespace command { struct mdbg_proc; }
 namespace command { struct mysql2ssim; }
 namespace command { struct mysql2ssim_proc; }
-namespace command { struct sh; }
-namespace command { struct sh_proc; }
 namespace command { struct src_func; }
 namespace command { struct src_func_proc; }
 namespace command { struct src_hdr; }
@@ -291,7 +289,7 @@ void                 StaticCheck();
 // access: command.abt_proc.abt (Exec)
 struct abt { // command.abt
     algo_lib::Regx     target;     //   ""  Regx of dev::Target
-    algo::cstring      in_dir;     //   "data"  Root of input ssim dir
+    algo::cstring      in;         //   "data"  Root of input ssim dir
     algo::cstring      out_dir;    //   ""  Output directory
     algo::Smallstr50   cfg;        //   ""  Set config
     algo::Smallstr50   compiler;   //   ""  Set compiler.
@@ -301,7 +299,6 @@ struct abt { // command.abt
     bool               list;       //   false  List target files
     bool               listincl;   //   false  List includes
     bool               build;      //   false  If set, build specified target (all necessary steps)
-    i32                line;       //   0  Specify source file line in question
     bool               preproc;    //   false  Preprocess file, produce .i file
     bool               clean;      //   false  Delete all output files
     bool               dry_run;    //   false  Print actions, do not perform
@@ -309,11 +306,9 @@ struct abt { // command.abt
     bool               printcmd;   //   false  Print commands. Do not execute
     bool               force;      //   false  Assume all files are out-of-date
     bool               testgen;    //   false  Run generator (amc) in test directory and report diff
-    bool               install;    //   false  Install executables to bin/uname-arch directory
+    bool               install;    //   false  Update soft-link under bin/
     bool               coverity;   //   false  Run abt in coverity mode
-    algo::cstring      release;    //   ""  Release tag
     algo::cstring      package;    //   ""  Package tag
-    bool               nover;      //   false  If set, precludes the version tag to be insereted into the target
     u32                maxerr;     //   100  Max failing commands before rest of pipeline is forced to fail
     algo_lib::Regx     disas;      //   ""  Regx of algo::cstring
     bool               report;     //   true  Print final report
@@ -387,40 +382,40 @@ void                 abt_proc_Uninit(command::abt_proc& parent) __attribute__((n
 // --- command.acr
 // access: command.acr_proc.acr (Exec)
 struct acr { // command.acr
-    algo::cstring   query;        //   ""  Regx to match record
-    bool            select;       //   true  Select records matching query (default)
-    bool            del;          //   false  Delete found item
-    bool            insert;       //   false  Read input and insert tuples
-    bool            replace;      //   false  Read stdin and replace tuples
-    bool            merge;        //   false  Like replace, but merge tuple attributes
-    bool            unused;       //   false  Only select records which are not referenced.
-    bool            trunc;        //   false  (with insert or rename): truncate table on first write
-    bool            check;        //   false  Run cross-reference check on selection
-    i32             maxshow;      //   100  Limit number of errors per table
-    bool            write;        //   false  Write data back to disk.
-    algo::cstring   rename;       //   ""  Change value of found item
-    i32             nup;          //   0  Number of levels to go up
-    i32             ndown;        //   0  Number of levels to go down
-    bool            xref;         //   false  Short for -nup 100 -ndown 100
-    bool            fldfunc;      //   false  Evaluate fldfunc when printing tuple
-    i32             maxgroup;     //   25  Max. items per group
-    bool            pretty;       //   true  Align output in blocks
-    bool            tree;         //   false  Print as tree
-    bool            loose;        //   false  Allow printing a record before its references (used with -e)
-    bool            my;           //   false  Invoke acr_my -e (using acr_my directly is faster)
-    algo::cstring   schema_dir;   //   "data"  Directory for initializing acr meta-data
-    bool            e;            //   false  Open selection in editor, write back when done.
-    bool            b;            //   false  Short for -serve 0.0.0.0:6769; start browser.
-    bool            t;            //   false  Short for -tree -xref -loose
-    bool            rowid;        //   false  Print/respect acr.rowid attribute
-    algo::cstring   in;           //   "data"  Input directory or filename, - for stdin
-    bool            cmt;          //   false  Print comments for all columns referenced in output
-    bool            report;       //   true  Show final report
-    bool            print;        //   true  Print selected records
-    algo::cstring   cmd;          //   ""  Print script with command execution for each selected row
-    algo::cstring   field;        //   ""  Comma-separated list of fields to select
-    algo::cstring   regxof;       //   ""  Single field: output regx of matching field values
-    bool            meta;         //   false  Select meta-data for selected records
+    algo::cstring   query;      //   ""  Regx to match record
+    bool            select;     //   true  Select records matching query (default)
+    bool            del;        //   false  Delete found item
+    bool            insert;     //   false  Read input and insert tuples
+    bool            replace;    //   false  Read stdin and replace tuples
+    bool            merge;      //   false  Like replace, but merge tuple attributes
+    bool            unused;     //   false  Only select records which are not referenced.
+    bool            trunc;      //   false  (with insert or rename): truncate table on first write
+    bool            check;      //   false  Run cross-reference check on selection
+    i32             maxshow;    //   100  Limit number of errors per table
+    bool            write;      //   false  Write data back to disk.
+    algo::cstring   rename;     //   ""  Change value of found item
+    i32             nup;        //   0  Number of levels to go up
+    i32             ndown;      //   0  Number of levels to go down
+    bool            xref;       //   false  Short for -nup 100 -ndown 100
+    bool            fldfunc;    //   false  Evaluate fldfunc when printing tuple
+    i32             maxgroup;   //   25  Max. items per group
+    bool            pretty;     //   true  Align output in blocks
+    bool            tree;       //   false  Print as tree
+    bool            loose;      //   false  Allow printing a record before its references (used with -e)
+    bool            my;         //   false  Invoke acr_my -e (using acr_my directly is faster)
+    algo::cstring   schema;     //   "data"  Directory for initializing acr meta-data
+    bool            e;          //   false  Open selection in editor, write back when done.
+    bool            b;          //   false  Short for -serve 0.0.0.0:6769; start browser.
+    bool            t;          //   false  Short for -tree -xref -loose
+    bool            rowid;      //   false  Print/respect acr.rowid attribute
+    algo::cstring   in;         //   "data"  Input directory or filename, - for stdin
+    bool            cmt;        //   false  Print comments for all columns referenced in output
+    bool            report;     //   true  Show final report
+    bool            print;      //   true  Print selected records
+    algo::cstring   cmd;        //   ""  Print script with command execution for each selected row
+    algo::cstring   field;      //   ""  Comma-separated list of fields to select
+    algo::cstring   regxof;     //   ""  Single field: output regx of matching field values
+    bool            meta;       //   false  Select meta-data for selected records
     acr();
 };
 
@@ -532,6 +527,7 @@ struct acr_ed { // command.acr_ed
     algo::Smallstr100   hashfld;     //   ""      (-reftype:Thash) Hash field
     algo::Smallstr100   sortfld;     //   ""      (-reftype:Bheap) Sort field
     algo::cstring       unittest;    //   ""  Create unit test, <ns>.<functionname>
+    algo::cstring       normcheck;   //   ""  Create normalization check
     algo::cstring       cppfunc;     //   ""  Field is a cppfunc, pass c++ expression as argument
     bool                xref;        //   false      X-ref with field type
     algo::cstring       via;         //   ""        X-ref argument (index, pointer, or index/key)
@@ -602,7 +598,7 @@ struct acr_in { // command.acr_in
     bool             sigcheck;      //   true  Output sigcheck records for schema version mismatch detection
     bool             list;          //   false  List ssimfile names
     algo::cstring    data_dir;      //   "data"  Directory with ssimfiles
-    algo::cstring    schema_dir;    //   "data"
+    algo::cstring    schema;        //   "data"
     algo::cstring    related;       //   ""  Select only tuples related to specified acr key
     algo_lib::Regx   notssimfile;   //   ""  Regx of dmmeta::Ssimfile
     bool             checkable;     //   false  Ensure output passes acr -check
@@ -676,17 +672,17 @@ void                 acr_in_proc_Uninit(command::acr_in_proc& parent) __attribut
 // --- command.acr_my
 // access: command.acr_my_proc.acr_my (Exec)
 struct acr_my { // command.acr_my
-    algo_lib::Regx   nsdb;         //   ""  Regx of dmmeta::Nsdb
-    algo::cstring    in;           //   "data"  Input directory or filename, - for stdin
-    algo::cstring    schema_dir;   //   "data"  Input directory or filename, - for stdin
-    bool             fldfunc;      //   false  Evaluate fldfunc when printing tuple
-    bool             fkey;         //   false  Enable foreign key constraints
-    bool             e;            //   false  Alias for -start -shell -stop
-    bool             start;        //   false  Start local mysql server
-    bool             stop;         //   false  Stop local mysql server, saving data
-    bool             abort;        //   false  Abort local mysql server, losing data
-    bool             shell;        //   false  Connect to local mysql server
-    bool             serv;         //   false  Start mysql with TCP/IP service enabled
+    algo_lib::Regx   nsdb;      //   ""  Regx of dmmeta::Nsdb
+    algo::cstring    in;        //   "data"  Input directory or filename, - for stdin
+    algo::cstring    schema;    //   "data"  Input directory or filename, - for stdin
+    bool             fldfunc;   //   false  Evaluate fldfunc when printing tuple
+    bool             fkey;      //   false  Enable foreign key constraints
+    bool             e;         //   false  Alias for -start -shell -stop
+    bool             start;     //   false  Start local mysql server
+    bool             stop;      //   false  Stop local mysql server, saving data
+    bool             abort;     //   false  Abort local mysql server, losing data
+    bool             shell;     //   false  Connect to local mysql server
+    bool             serv;      //   false  Start mysql with TCP/IP service enabled
     acr_my();
 };
 
@@ -709,7 +705,7 @@ tempstr              acr_my_ToCmdline(command::acr_my & row) __attribute__((noth
 algo::strptr         acr_my_GetAnon(command::acr_my &parent, i32 idx) __attribute__((nothrow));
 
 // --- command.acr_my_proc
-struct acr_my_proc { // command.acr_my_proc: Subprocess: 
+struct acr_my_proc { // command.acr_my_proc: Subprocess: ACR <-> MariaDB adaptor
     algo::cstring     path;      //   "bin/acr_my"  path for executable
     command::acr_my   cmd;       // command line for child process
     algo::cstring     stdin;     // redirect for stdin
@@ -792,7 +788,7 @@ void                 acr_proc_Uninit(command::acr_proc& parent) __attribute__((n
 // access: command.amc_proc.amc (Exec)
 struct amc { // command.amc
     algo::cstring    in_dir;    //   "data"  Root of input ssim dir
-    algo_lib::Regx   query;     //   ""  Regx of algo::cstring
+    algo::cstring    query;     //   ""  Query mode: generate code for specified object
     algo::cstring    out_dir;   //   "."  Root of output cpp dir
     bool             proto;     //   false  Print prototype
     bool             report;    //   true  Final report
@@ -800,12 +796,6 @@ struct amc { // command.amc
     algo_lib::Regx   trace;     //   ""  Regx of algo::cstring
     amc();
 };
-
-// Print back to string
-void                 query_Print(command::amc& parent, algo::cstring &out) __attribute__((nothrow));
-// Read Regx from string
-// Convert string to field. Return success value
-bool                 query_ReadStrptrMaybe(command::amc& parent, algo::strptr in) __attribute__((nothrow));
 
 // Print back to string
 void                 trace_Print(command::amc& parent, algo::cstring &out) __attribute__((nothrow));
@@ -1063,7 +1053,7 @@ tempstr              atf_amc_ToCmdline(command::atf_amc & row) __attribute__((no
 algo::strptr         atf_amc_GetAnon(command::atf_amc &parent, i32 idx) __attribute__((nothrow));
 
 // --- command.atf_amc_proc
-struct atf_amc_proc { // command.atf_amc_proc: Subprocess: 
+struct atf_amc_proc { // command.atf_amc_proc: Subprocess: Unit tests for amc (see amctest table)
     algo::cstring      path;      //   "bin/atf_amc"  path for executable
     command::atf_amc   cmd;       // command line for child process
     algo::cstring      stdin;     // redirect for stdin
@@ -1129,7 +1119,7 @@ tempstr              atf_norm_ToCmdline(command::atf_norm & row) __attribute__((
 algo::strptr         atf_norm_GetAnon(command::atf_norm &parent, i32 idx) __attribute__((nothrow));
 
 // --- command.atf_norm_proc
-struct atf_norm_proc { // command.atf_norm_proc: Subprocess: Run normalization tests (see normcheck table)
+struct atf_norm_proc { // command.atf_norm_proc: Subprocess: Normalization tests (see normcheck table)
     algo::cstring       path;      //   "bin/atf_norm"  path for executable
     command::atf_norm   cmd;       // command line for child process
     algo::cstring       stdin;     // redirect for stdin
@@ -1200,7 +1190,7 @@ tempstr              atf_unit_ToCmdline(command::atf_unit & row) __attribute__((
 algo::strptr         atf_unit_GetAnon(command::atf_unit &parent, i32 idx) __attribute__((nothrow));
 
 // --- command.atf_unit_proc
-struct atf_unit_proc { // command.atf_unit_proc: Subprocess: Algo Test Framework: unit tests
+struct atf_unit_proc { // command.atf_unit_proc: Subprocess: Unit tests (see unittest table)
     algo::cstring       path;      //   "bin/atf_unit"  path for executable
     command::atf_unit   cmd;       // command line for child process
     algo::cstring       stdin;     // redirect for stdin
@@ -1238,6 +1228,58 @@ algo::tempstr        atf_unit_ToCmdline(command::atf_unit_proc& parent) __attrib
 // Set all fields to initial values.
 void                 atf_unit_proc_Init(command::atf_unit_proc& parent);
 void                 atf_unit_proc_Uninit(command::atf_unit_proc& parent) __attribute__((nothrow));
+
+// --- command.bash
+// access: command.bash_proc.bash (Exec)
+struct bash { // command.bash: One way of invoking the shell
+    algo::cstring   c;   //   ""  Shell command to execute
+    bash();
+};
+
+// Set all fields to initial values.
+void                 bash_Init(command::bash& parent);
+// print command-line args of command::bash to string  -- cprint:command.bash.Argv
+void                 bash_PrintArgv(command::bash & row, algo::cstring &str) __attribute__((nothrow));
+
+// --- command.bash_proc
+struct bash_proc { // command.bash_proc: Shell subprocess
+    algo::cstring   path;      //   "bash"  path for executable
+    command::bash   cmd;       // command line for child process
+    algo::cstring   stdin;     // redirect for stdin
+    algo::cstring   stdout;    // redirect for stdout
+    algo::cstring   stderr;    // redirect for stderr
+    pid_t           pid;       //   0  pid of running child process
+    i32             timeout;   //   0  optional timeout for child process
+    i32             status;    //   0  last exit status of child process
+    bash_proc();
+    ~bash_proc();
+private:
+    // reftype of command.bash_proc.bash prohibits copy
+    bash_proc(const bash_proc&){ /*disallow copy constructor */}
+    void operator =(const bash_proc&){ /*disallow direct assignment */}
+};
+
+// Start subprocess
+// If subprocess already running, do nothing. Otherwise, start it
+int                  bash_Start(command::bash_proc& parent) __attribute__((nothrow));
+// Kill subprocess and wait
+void                 bash_Kill(command::bash_proc& parent);
+// Wait for subprocess to return
+void                 bash_Wait(command::bash_proc& parent) __attribute__((nothrow));
+// Start + Wait
+// Execute subprocess and return exit code
+int                  bash_Exec(command::bash_proc& parent) __attribute__((nothrow));
+// Start + Wait, throw exception on error
+// Execute subprocess; throw human-readable exception on error
+void                 bash_ExecX(command::bash_proc& parent);
+// Call execv()
+// Call execv with specified parameters -- cprint:bash.Argv
+int                  bash_Execv(command::bash_proc& parent) __attribute__((nothrow));
+algo::tempstr        bash_ToCmdline(command::bash_proc& parent) __attribute__((nothrow));
+
+// Set all fields to initial values.
+void                 bash_proc_Init(command::bash_proc& parent);
+void                 bash_proc_Uninit(command::bash_proc& parent) __attribute__((nothrow));
 
 // --- command.lib_ctype
 struct lib_ctype { // command.lib_ctype
@@ -1310,7 +1352,7 @@ tempstr              mdbg_ToCmdline(command::mdbg & row) __attribute__((nothrow)
 algo::strptr         mdbg_GetAnon(command::mdbg &parent, i32 idx) __attribute__((nothrow));
 
 // --- command.mdbg_proc
-struct mdbg_proc { // command.mdbg_proc: Subprocess: Module debugger
+struct mdbg_proc { // command.mdbg_proc: Subprocess: My debugger
     algo::cstring   path;      //   "bin/mdbg"  path for executable
     command::mdbg   cmd;       // command line for child process
     algo::cstring   stdin;     // redirect for stdin
@@ -1414,58 +1456,6 @@ algo::tempstr        mysql2ssim_ToCmdline(command::mysql2ssim_proc& parent) __at
 // Set all fields to initial values.
 void                 mysql2ssim_proc_Init(command::mysql2ssim_proc& parent);
 void                 mysql2ssim_proc_Uninit(command::mysql2ssim_proc& parent) __attribute__((nothrow));
-
-// --- command.sh
-// access: command.sh_proc.sh (Exec)
-struct sh { // command.sh: One way of invoking the shell
-    algo::cstring   c;   //   ""  Shell command to execute
-    sh();
-};
-
-// Set all fields to initial values.
-void                 sh_Init(command::sh& parent);
-// print command-line args of command::sh to string  -- cprint:command.sh.Argv
-void                 sh_PrintArgv(command::sh & row, algo::cstring &str) __attribute__((nothrow));
-
-// --- command.sh_proc
-struct sh_proc { // command.sh_proc: Shell subprocess
-    algo::cstring   path;      //   "/bin/sh"  path for executable
-    command::sh     cmd;       // command line for child process
-    algo::cstring   stdin;     // redirect for stdin
-    algo::cstring   stdout;    // redirect for stdout
-    algo::cstring   stderr;    // redirect for stderr
-    pid_t           pid;       //   0  pid of running child process
-    i32             timeout;   //   0  optional timeout for child process
-    i32             status;    //   0  last exit status of child process
-    sh_proc();
-    ~sh_proc();
-private:
-    // reftype of command.sh_proc.sh prohibits copy
-    sh_proc(const sh_proc&){ /*disallow copy constructor */}
-    void operator =(const sh_proc&){ /*disallow direct assignment */}
-};
-
-// Start subprocess
-// If subprocess already running, do nothing. Otherwise, start it
-int                  sh_Start(command::sh_proc& parent) __attribute__((nothrow));
-// Kill subprocess and wait
-void                 sh_Kill(command::sh_proc& parent);
-// Wait for subprocess to return
-void                 sh_Wait(command::sh_proc& parent) __attribute__((nothrow));
-// Start + Wait
-// Execute subprocess and return exit code
-int                  sh_Exec(command::sh_proc& parent) __attribute__((nothrow));
-// Start + Wait, throw exception on error
-// Execute subprocess; throw human-readable exception on error
-void                 sh_ExecX(command::sh_proc& parent);
-// Call execv()
-// Call execv with specified parameters -- cprint:sh.Argv
-int                  sh_Execv(command::sh_proc& parent) __attribute__((nothrow));
-algo::tempstr        sh_ToCmdline(command::sh_proc& parent) __attribute__((nothrow));
-
-// Set all fields to initial values.
-void                 sh_proc_Init(command::sh_proc& parent);
-void                 sh_proc_Uninit(command::sh_proc& parent) __attribute__((nothrow));
 
 // --- command.src_func
 // access: command.src_func_proc.src_func (Exec)
@@ -1581,6 +1571,7 @@ struct src_hdr { // command.src_hdr
     algo_lib::Regx   targsrc;          //   "%"  Regx of dev::Targsrc
     bool             write;            //   false  Update files in-place
     bool             update_authors;   //   false  Update authors from git history
+    bool             indent;           //   false  Indent source files
     src_hdr();
 };
 
@@ -1860,7 +1851,7 @@ tempstr              strconv_ToCmdline(command::strconv & row) __attribute__((no
 algo::strptr         strconv_GetAnon(command::strconv &parent, i32 idx) __attribute__((nothrow));
 
 // --- command.strconv_proc
-struct strconv_proc { // command.strconv_proc: Subprocess: 
+struct strconv_proc { // command.strconv_proc: Subprocess: A simple string utility
     algo::cstring      path;      //   "bin/strconv"  path for executable
     command::strconv   cmd;       // command line for child process
     algo::cstring      stdin;     // redirect for stdin

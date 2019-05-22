@@ -10,16 +10,16 @@
 #include "include/algo.h"  // hard-coded include
 #include "include/gen/atf_norm_gen.h"
 #include "include/gen/atf_norm_gen.inl.h"
+#include "include/gen/dev_gen.h"
+#include "include/gen/dev_gen.inl.h"
+#include "include/gen/algo_gen.h"
+#include "include/gen/algo_gen.inl.h"
 #include "include/gen/command_gen.h"
 #include "include/gen/command_gen.inl.h"
 #include "include/gen/atfdb_gen.h"
 #include "include/gen/atfdb_gen.inl.h"
-#include "include/gen/algo_gen.h"
-#include "include/gen/algo_gen.inl.h"
 #include "include/gen/dmmeta_gen.h"
 #include "include/gen/dmmeta_gen.inl.h"
-#include "include/gen/dev_gen.h"
-#include "include/gen/dev_gen.inl.h"
 #include "include/gen/lib_prot_gen.h"
 #include "include/gen/lib_prot_gen.inl.h"
 #include "include/gen/algo_lib_gen.h"
@@ -36,7 +36,7 @@ atf_norm::FDb   atf_norm::_db;    // dependency found via dev.targdep
 
 namespace atf_norm {
 const char *atf_norm_help =
-"atf_norm: Run normalization tests (see normcheck table)\n"
+"atf_norm: Normalization tests (see normcheck table)\n"
 "Usage: atf_norm [options]\n"
 "    -in          string  Input directory or filename, - for stdin. default: \"data\"\n"
 "    [normcheck]  string  Normalization checks to run. default: \"%\"\n"
@@ -54,19 +54,79 @@ const char *atf_norm_syntax =
 ;
 } // namespace atf_norm
 namespace atf_norm {
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-static void          normcheck_LoadStatic() __attribute__((nothrow));
-static bool          ssimfile_InputMaybe(dmmeta::Ssimfile &elem) __attribute__((nothrow));
-static bool          scriptfile_InputMaybe(dev::Scriptfile &elem) __attribute__((nothrow));
-static bool          ns_InputMaybe(dmmeta::Ns &elem) __attribute__((nothrow));
-static bool          readme_InputMaybe(dev::Readme &elem) __attribute__((nothrow));
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-static void          SizeCheck();
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    static void          normcheck_LoadStatic() __attribute__((nothrow));
+    static bool          ssimfile_InputMaybe(dmmeta::Ssimfile &elem) __attribute__((nothrow));
+    static bool          scriptfile_InputMaybe(dev::Scriptfile &elem) __attribute__((nothrow));
+    static bool          ns_InputMaybe(dmmeta::Ns &elem) __attribute__((nothrow));
+    static bool          readme_InputMaybe(dev::Readme &elem) __attribute__((nothrow));
+    static bool          builddir_InputMaybe(dev::Builddir &elem) __attribute__((nothrow));
+    static bool          cfg_InputMaybe(dev::Cfg &elem) __attribute__((nothrow));
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    static void          SizeCheck();
 } // end namespace atf_norm
+
+// --- atf_norm.FBuilddir.base.CopyOut
+// Copy fields out of row
+void atf_norm::builddir_CopyOut(atf_norm::FBuilddir &row, dev::Builddir &out) {
+    out.builddir = row.builddir;
+    out.comment = row.comment;
+}
+
+// --- atf_norm.FBuilddir.base.CopyIn
+// Copy fields in to row
+void atf_norm::builddir_CopyIn(atf_norm::FBuilddir &row, dev::Builddir &in) {
+    row.builddir = in.builddir;
+    row.comment = in.comment;
+}
+
+// --- atf_norm.FBuilddir.uname.Get
+algo::Smallstr50 atf_norm::uname_Get(atf_norm::FBuilddir& builddir) {
+    algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LL-LL"));
+    return ret;
+}
+
+// --- atf_norm.FBuilddir.compiler.Get
+algo::Smallstr50 atf_norm::compiler_Get(atf_norm::FBuilddir& builddir) {
+    algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LL-LR"));
+    return ret;
+}
+
+// --- atf_norm.FBuilddir.cfg.Get
+algo::Smallstr50 atf_norm::cfg_Get(atf_norm::FBuilddir& builddir) {
+    algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LR-LL"));
+    return ret;
+}
+
+// --- atf_norm.FBuilddir.arch.Get
+algo::Smallstr50 atf_norm::arch_Get(atf_norm::FBuilddir& builddir) {
+    algo::Smallstr50 ret(algo::Pathcomp(builddir.builddir, ".LR-LR"));
+    return ret;
+}
+
+// --- atf_norm.FBuilddir..Uninit
+void atf_norm::FBuilddir_Uninit(atf_norm::FBuilddir& builddir) {
+    atf_norm::FBuilddir &row = builddir; (void)row;
+    ind_builddir_Remove(row); // remove builddir from index ind_builddir
+}
+
+// --- atf_norm.FCfg.base.CopyOut
+// Copy fields out of row
+void atf_norm::cfg_CopyOut(atf_norm::FCfg &row, dev::Cfg &out) {
+    out.cfg = row.cfg;
+    out.comment = row.comment;
+}
+
+// --- atf_norm.FCfg.base.CopyIn
+// Copy fields in to row
+void atf_norm::cfg_CopyIn(atf_norm::FCfg &row, dev::Cfg &in) {
+    row.cfg = in.cfg;
+    row.comment = in.comment;
+}
 
 // --- atf_norm.trace..Print
 // print string representation of atf_norm::trace to string LHS, no header -- cprint:atf_norm.trace.String
@@ -120,7 +180,7 @@ static void atf_norm::InitReflection() {
 
 
     // -- load signatures of existing dispatches --
-    algo_lib::InsertStrptrMaybe("dmmeta.Dispsigcheck  dispsig:'atf_norm.Input'  signature:'3626e34d29ecb6be034040c47f0a81db3babb4a5'");
+    algo_lib::InsertStrptrMaybe("dmmeta.Dispsigcheck  dispsig:'atf_norm.Input'  signature:'338efa8825bb49e4d331718e7d3713bfe505dddc'");
 }
 
 // --- atf_norm.FDb._db.StaticCheck
@@ -161,6 +221,18 @@ bool atf_norm::InsertStrptrMaybe(algo::strptr str) {
             retval = retval && readme_InputMaybe(elem);
             break;
         }
+        case atf_norm_TableId_dev_Builddir: { // finput:atf_norm.FDb.builddir
+            dev::Builddir elem;
+            retval = dev::Builddir_ReadStrptrMaybe(elem, str);
+            retval = retval && builddir_InputMaybe(elem);
+            break;
+        }
+        case atf_norm_TableId_dev_Cfg: { // finput:atf_norm.FDb.cfg
+            dev::Cfg elem;
+            retval = dev::Cfg_ReadStrptrMaybe(elem, str);
+            retval = retval && cfg_InputMaybe(elem);
+            break;
+        }
         default:
         retval = algo_lib::InsertStrptrMaybe(str);
         break;
@@ -176,8 +248,8 @@ bool atf_norm::InsertStrptrMaybe(algo::strptr str) {
 bool atf_norm::LoadTuplesMaybe(algo::strptr root) {
     bool retval = true;
     static const char *ssimfiles[] = {
-        "dmmeta.ns", "dev.readme", "dev.scriptfile", "dmmeta.ssimfile"
-
+        "dev.builddir", "dev.cfg", "dmmeta.ns", "dev.readme"
+        , "dev.scriptfile", "dmmeta.ssimfile"
         , NULL};
         retval = algo_lib::DoLoadTuples(root, atf_norm::InsertStrptrMaybe, ssimfiles, true);
         return retval;
@@ -195,7 +267,7 @@ bool atf_norm::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- atf_norm.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_norm::_db_XrefMaybe() {
     bool retval = true;
     return retval;
@@ -290,6 +362,7 @@ static void atf_norm::normcheck_LoadStatic() {
         void (*step)();
     } data[] = {
         { "atfdb.normcheck  normcheck:amc  comment:\"Run amc\"", atf_norm::normcheck_amc }
+        ,{ "atfdb.normcheck  normcheck:bootstrap  comment:\"Re-generate bootstrap files\"", atf_norm::normcheck_bootstrap }
         ,{ "atfdb.normcheck  normcheck:testamc  comment:\"Test amc (run atf_amc)\"", atf_norm::normcheck_testamc }
         ,{ "atfdb.normcheck  normcheck:readme  comment:\"Re-generate README.md table of contents\"", atf_norm::normcheck_readme }
         ,{ "atfdb.normcheck  normcheck:unit  comment:\"Run unit tests\"", atf_norm::normcheck_unit }
@@ -305,7 +378,8 @@ static void atf_norm::normcheck_LoadStatic() {
         ,{ "atfdb.normcheck  normcheck:ssimfile  comment:\"Check for .ssim files with no corresponding ssimfile entry\"", atf_norm::normcheck_ssimfile }
         ,{ "atfdb.normcheck  normcheck:normalize_acr  comment:\"Read ssim databases into memory and write back\"", atf_norm::normcheck_normalize_acr }
         ,{ "atfdb.normcheck  normcheck:normalize_acr_my  comment:\"Round trip ssim databases through MariaDB and back\"", atf_norm::normcheck_normalize_acr_my }
-        ,{ "atfdb.normcheck  normcheck:bootstrap  comment:\"Re-run abt bootstrap\"", atf_norm::normcheck_bootstrap }
+        ,{ "atfdb.normcheck  normcheck:build_clang  comment:\"Build everything under clang\"", atf_norm::normcheck_build_clang }
+        ,{ "atfdb.normcheck  normcheck:build_gcc9  comment:\"Build everything under g++-9\"", atf_norm::normcheck_build_gcc9 }
         ,{NULL, NULL}
     };
     (void)data;
@@ -322,7 +396,7 @@ static void atf_norm::normcheck_LoadStatic() {
 
 // --- atf_norm.FDb.normcheck.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_norm::normcheck_XrefMaybe(atf_norm::FNormcheck &row) {
     bool retval = true;
     (void)row;
@@ -410,7 +484,7 @@ static bool atf_norm::ssimfile_InputMaybe(dmmeta::Ssimfile &elem) {
 
 // --- atf_norm.FDb.ssimfile.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_norm::ssimfile_XrefMaybe(atf_norm::FSsimfile &row) {
     bool retval = true;
     (void)row;
@@ -638,7 +712,7 @@ static bool atf_norm::scriptfile_InputMaybe(dev::Scriptfile &elem) {
 
 // --- atf_norm.FDb.scriptfile.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_norm::scriptfile_XrefMaybe(atf_norm::FScriptfile &row) {
     bool retval = true;
     (void)row;
@@ -866,7 +940,7 @@ static bool atf_norm::ns_InputMaybe(dmmeta::Ns &elem) {
 
 // --- atf_norm.FDb.ns.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_norm::ns_XrefMaybe(atf_norm::FNs &row) {
     bool retval = true;
     (void)row;
@@ -1094,11 +1168,337 @@ static bool atf_norm::readme_InputMaybe(dev::Readme &elem) {
 
 // --- atf_norm.FDb.readme.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_norm::readme_XrefMaybe(atf_norm::FReadme &row) {
     bool retval = true;
     (void)row;
     return retval;
+}
+
+// --- atf_norm.FDb.builddir.Alloc
+// Allocate memory for new default row.
+// If out of memory, process is killed.
+atf_norm::FBuilddir& atf_norm::builddir_Alloc() {
+    atf_norm::FBuilddir* row = builddir_AllocMaybe();
+    if (UNLIKELY(row == NULL)) {
+        FatalErrorExit("atf_norm.out_of_mem  field:atf_norm.FDb.builddir  comment:'Alloc failed'");
+    }
+    return *row;
+}
+
+// --- atf_norm.FDb.builddir.AllocMaybe
+// Allocate memory for new element. If out of memory, return NULL.
+atf_norm::FBuilddir* atf_norm::builddir_AllocMaybe() {
+    atf_norm::FBuilddir *row = (atf_norm::FBuilddir*)builddir_AllocMem();
+    if (row) {
+        new (row) atf_norm::FBuilddir; // call constructor
+    }
+    return row;
+}
+
+// --- atf_norm.FDb.builddir.InsertMaybe
+// Create new row from struct.
+// Return pointer to new element, or NULL if insertion failed (due to out-of-memory, duplicate key, etc)
+atf_norm::FBuilddir* atf_norm::builddir_InsertMaybe(const dev::Builddir &value) {
+    atf_norm::FBuilddir *row = &builddir_Alloc(); // if out of memory, process dies. if input error, return NULL.
+    builddir_CopyIn(*row,const_cast<dev::Builddir&>(value));
+    bool ok = builddir_XrefMaybe(*row); // this may return false
+    if (!ok) {
+        builddir_RemoveLast(); // delete offending row, any existing xrefs are cleared
+        row = NULL; // forget this ever happened
+    }
+    return row;
+}
+
+// --- atf_norm.FDb.builddir.AllocMem
+// Allocate space for one element. If no memory available, return NULL.
+void* atf_norm::builddir_AllocMem() {
+    u64 new_nelems     = _db.builddir_n+1;
+    // compute level and index on level
+    u64 bsr   = algo::u64_BitScanReverse(new_nelems);
+    u64 base  = u64(1)<<bsr;
+    u64 index = new_nelems-base;
+    void *ret = NULL;
+    // if level doesn't exist yet, create it
+    atf_norm::FBuilddir*  lev   = NULL;
+    if (bsr < 32) {
+        lev = _db.builddir_lary[bsr];
+        if (!lev) {
+            lev=(atf_norm::FBuilddir*)algo_lib::malloc_AllocMem(sizeof(atf_norm::FBuilddir) * (u64(1)<<bsr));
+            _db.builddir_lary[bsr] = lev;
+        }
+    }
+    // allocate element from this level
+    if (lev) {
+        _db.builddir_n = new_nelems;
+        ret = lev + index;
+    }
+    return ret;
+}
+
+// --- atf_norm.FDb.builddir.RemoveAll
+// Remove all elements from Lary
+void atf_norm::builddir_RemoveAll() {
+    for (u64 n = _db.builddir_n; n>0; ) {
+        n--;
+        builddir_qFind(u64(n)).~FBuilddir(); // destroy last element
+        _db.builddir_n = n;
+    }
+}
+
+// --- atf_norm.FDb.builddir.RemoveLast
+// Delete last element of array. Do nothing if array is empty.
+void atf_norm::builddir_RemoveLast() {
+    u64 n = _db.builddir_n;
+    if (n > 0) {
+        n -= 1;
+        builddir_qFind(u64(n)).~FBuilddir();
+        _db.builddir_n = n;
+    }
+}
+
+// --- atf_norm.FDb.builddir.InputMaybe
+static bool atf_norm::builddir_InputMaybe(dev::Builddir &elem) {
+    bool retval = true;
+    retval = builddir_InsertMaybe(elem);
+    return retval;
+}
+
+// --- atf_norm.FDb.builddir.XrefMaybe
+// Insert row into all appropriate indices. If error occurs, store error
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
+bool atf_norm::builddir_XrefMaybe(atf_norm::FBuilddir &row) {
+    bool retval = true;
+    (void)row;
+    // insert builddir into index ind_builddir
+    if (true) { // user-defined insert condition
+        bool success = ind_builddir_InsertMaybe(row);
+        if (UNLIKELY(!success)) {
+            ch_RemoveAll(algo_lib::_db.errtext);
+            algo_lib::_db.errtext << "atf_norm.duplicate_key  xref:atf_norm.FDb.ind_builddir"; // check for duplicate key
+            return false;
+        }
+    }
+    return retval;
+}
+
+// --- atf_norm.FDb.cfg.Alloc
+// Allocate memory for new default row.
+// If out of memory, process is killed.
+atf_norm::FCfg& atf_norm::cfg_Alloc() {
+    atf_norm::FCfg* row = cfg_AllocMaybe();
+    if (UNLIKELY(row == NULL)) {
+        FatalErrorExit("atf_norm.out_of_mem  field:atf_norm.FDb.cfg  comment:'Alloc failed'");
+    }
+    return *row;
+}
+
+// --- atf_norm.FDb.cfg.AllocMaybe
+// Allocate memory for new element. If out of memory, return NULL.
+atf_norm::FCfg* atf_norm::cfg_AllocMaybe() {
+    atf_norm::FCfg *row = (atf_norm::FCfg*)cfg_AllocMem();
+    if (row) {
+        new (row) atf_norm::FCfg; // call constructor
+    }
+    return row;
+}
+
+// --- atf_norm.FDb.cfg.InsertMaybe
+// Create new row from struct.
+// Return pointer to new element, or NULL if insertion failed (due to out-of-memory, duplicate key, etc)
+atf_norm::FCfg* atf_norm::cfg_InsertMaybe(const dev::Cfg &value) {
+    atf_norm::FCfg *row = &cfg_Alloc(); // if out of memory, process dies. if input error, return NULL.
+    cfg_CopyIn(*row,const_cast<dev::Cfg&>(value));
+    bool ok = cfg_XrefMaybe(*row); // this may return false
+    if (!ok) {
+        cfg_RemoveLast(); // delete offending row, any existing xrefs are cleared
+        row = NULL; // forget this ever happened
+    }
+    return row;
+}
+
+// --- atf_norm.FDb.cfg.AllocMem
+// Allocate space for one element. If no memory available, return NULL.
+void* atf_norm::cfg_AllocMem() {
+    u64 new_nelems     = _db.cfg_n+1;
+    // compute level and index on level
+    u64 bsr   = algo::u64_BitScanReverse(new_nelems);
+    u64 base  = u64(1)<<bsr;
+    u64 index = new_nelems-base;
+    void *ret = NULL;
+    // if level doesn't exist yet, create it
+    atf_norm::FCfg*  lev   = NULL;
+    if (bsr < 32) {
+        lev = _db.cfg_lary[bsr];
+        if (!lev) {
+            lev=(atf_norm::FCfg*)algo_lib::malloc_AllocMem(sizeof(atf_norm::FCfg) * (u64(1)<<bsr));
+            _db.cfg_lary[bsr] = lev;
+        }
+    }
+    // allocate element from this level
+    if (lev) {
+        _db.cfg_n = new_nelems;
+        ret = lev + index;
+    }
+    return ret;
+}
+
+// --- atf_norm.FDb.cfg.RemoveAll
+// Remove all elements from Lary
+void atf_norm::cfg_RemoveAll() {
+    for (u64 n = _db.cfg_n; n>0; ) {
+        n--;
+        cfg_qFind(u64(n)).~FCfg(); // destroy last element
+        _db.cfg_n = n;
+    }
+}
+
+// --- atf_norm.FDb.cfg.RemoveLast
+// Delete last element of array. Do nothing if array is empty.
+void atf_norm::cfg_RemoveLast() {
+    u64 n = _db.cfg_n;
+    if (n > 0) {
+        n -= 1;
+        cfg_qFind(u64(n)).~FCfg();
+        _db.cfg_n = n;
+    }
+}
+
+// --- atf_norm.FDb.cfg.InputMaybe
+static bool atf_norm::cfg_InputMaybe(dev::Cfg &elem) {
+    bool retval = true;
+    retval = cfg_InsertMaybe(elem);
+    return retval;
+}
+
+// --- atf_norm.FDb.cfg.XrefMaybe
+// Insert row into all appropriate indices. If error occurs, store error
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
+bool atf_norm::cfg_XrefMaybe(atf_norm::FCfg &row) {
+    bool retval = true;
+    (void)row;
+    return retval;
+}
+
+// --- atf_norm.FDb.ind_builddir.Find
+// Find row by key. Return NULL if not found.
+atf_norm::FBuilddir* atf_norm::ind_builddir_Find(const algo::strptr& key) {
+    u32 index = Smallstr50_Hash(0, key) & (_db.ind_builddir_buckets_n - 1);
+    atf_norm::FBuilddir* *e = &_db.ind_builddir_buckets_elems[index];
+    atf_norm::FBuilddir* ret=NULL;
+    do {
+        ret       = *e;
+        bool done = !ret || (*ret).builddir == key;
+        if (done) break;
+        e         = &ret->ind_builddir_next;
+    } while (true);
+    return ret;
+}
+
+// --- atf_norm.FDb.ind_builddir.FindX
+// Look up row by key and return reference. Throw exception if not found
+atf_norm::FBuilddir& atf_norm::ind_builddir_FindX(const algo::strptr& key) {
+    atf_norm::FBuilddir* ret = ind_builddir_Find(key);
+    vrfy(ret, tempstr() << "atf_norm.key_error  table:ind_builddir  key:'"<<key<<"'  comment:'key not found'");
+    return *ret;
+}
+
+// --- atf_norm.FDb.ind_builddir.GetOrCreate
+// Find row by key. If not found, create and x-reference a new row with with this key.
+atf_norm::FBuilddir& atf_norm::ind_builddir_GetOrCreate(const algo::strptr& key) {
+    atf_norm::FBuilddir* ret = ind_builddir_Find(key);
+    if (!ret) { //  if memory alloc fails, process dies; if insert fails, function returns NULL.
+        ret         = &builddir_Alloc();
+        (*ret).builddir = key;
+        bool good = builddir_XrefMaybe(*ret);
+        if (!good) {
+            builddir_RemoveLast(); // delete offending row, any existing xrefs are cleared
+            ret = NULL;
+        }
+    }
+    return *ret;
+}
+
+// --- atf_norm.FDb.ind_builddir.InsertMaybe
+// Insert row into hash table. Return true if row is reachable through the hash after the function completes.
+bool atf_norm::ind_builddir_InsertMaybe(atf_norm::FBuilddir& row) {
+    ind_builddir_Reserve(1);
+    bool retval = true; // if already in hash, InsertMaybe returns true
+    if (LIKELY(row.ind_builddir_next == (atf_norm::FBuilddir*)-1)) {// check if in hash already
+        u32 index = Smallstr50_Hash(0, row.builddir) & (_db.ind_builddir_buckets_n - 1);
+        atf_norm::FBuilddir* *prev = &_db.ind_builddir_buckets_elems[index];
+        do {
+            atf_norm::FBuilddir* ret = *prev;
+            if (!ret) { // exit condition 1: reached the end of the list
+                break;
+            }
+            if ((*ret).builddir == row.builddir) { // exit condition 2: found matching key
+                retval = false;
+                break;
+            }
+            prev = &ret->ind_builddir_next;
+        } while (true);
+        if (retval) {
+            row.ind_builddir_next = *prev;
+            _db.ind_builddir_n++;
+            *prev = &row;
+        }
+    }
+    return retval;
+}
+
+// --- atf_norm.FDb.ind_builddir.Remove
+// Remove reference to element from hash index. If element is not in hash, do nothing
+void atf_norm::ind_builddir_Remove(atf_norm::FBuilddir& row) {
+    if (LIKELY(row.ind_builddir_next != (atf_norm::FBuilddir*)-1)) {// check if in hash already
+        u32 index = Smallstr50_Hash(0, row.builddir) & (_db.ind_builddir_buckets_n - 1);
+        atf_norm::FBuilddir* *prev = &_db.ind_builddir_buckets_elems[index]; // addr of pointer to current element
+        while (atf_norm::FBuilddir *next = *prev) {                          // scan the collision chain for our element
+            if (next == &row) {        // found it?
+                *prev = next->ind_builddir_next; // unlink (singly linked list)
+                _db.ind_builddir_n--;
+                row.ind_builddir_next = (atf_norm::FBuilddir*)-1;// not-in-hash
+                break;
+            }
+            prev = &next->ind_builddir_next;
+        }
+    }
+}
+
+// --- atf_norm.FDb.ind_builddir.Reserve
+// Reserve enough room in the hash for N more elements. Return success code.
+void atf_norm::ind_builddir_Reserve(int n) {
+    u32 old_nbuckets = _db.ind_builddir_buckets_n;
+    u32 new_nelems   = _db.ind_builddir_n + n;
+    // # of elements has to be roughly equal to the number of buckets
+    if (new_nelems > old_nbuckets) {
+        int new_nbuckets = i32_Max(BumpToPow2(new_nelems), u32(4));
+        u32 old_size = old_nbuckets * sizeof(atf_norm::FBuilddir*);
+        u32 new_size = new_nbuckets * sizeof(atf_norm::FBuilddir*);
+        // allocate new array. we don't use Realloc since copying is not needed and factor of 2 probably
+        // means new memory will have to be allocated anyway
+        atf_norm::FBuilddir* *new_buckets = (atf_norm::FBuilddir**)algo_lib::malloc_AllocMem(new_size);
+        if (UNLIKELY(!new_buckets)) {
+            FatalErrorExit("atf_norm.out_of_memory  field:atf_norm.FDb.ind_builddir");
+        }
+        memset(new_buckets, 0, new_size); // clear pointers
+        // rehash all entries
+        for (int i = 0; i < _db.ind_builddir_buckets_n; i++) {
+            atf_norm::FBuilddir* elem = _db.ind_builddir_buckets_elems[i];
+            while (elem) {
+                atf_norm::FBuilddir &row        = *elem;
+                atf_norm::FBuilddir* next       = row.ind_builddir_next;
+                u32 index          = Smallstr50_Hash(0, row.builddir) & (new_nbuckets-1);
+                row.ind_builddir_next     = new_buckets[index];
+                new_buckets[index] = &row;
+                elem               = next;
+            }
+        }
+        // free old array
+        algo_lib::malloc_FreeMem(_db.ind_builddir_buckets_elems, old_size);
+        _db.ind_builddir_buckets_elems = new_buckets;
+        _db.ind_builddir_buckets_n = new_nbuckets;
+    }
 }
 
 // --- atf_norm.FDb.trace.RowidFind
@@ -1147,7 +1547,6 @@ void atf_norm::FDb_Init() {
     }
     memset(_db.ind_ssimfile_buckets_elems, 0, sizeof(atf_norm::FSsimfile*)*_db.ind_ssimfile_buckets_n); // (atf_norm.FDb.ind_ssimfile)
     _db.c_normcheck = NULL;
-    _db.env_loaded = bool(false);
     // initialize LAry scriptfile (atf_norm.FDb.scriptfile)
     _db.scriptfile_n = 0;
     memset(_db.scriptfile_lary, 0, sizeof(_db.scriptfile_lary)); // zero out all level pointers
@@ -1197,6 +1596,36 @@ void atf_norm::FDb_Init() {
         _db.readme_lary[i]  = readme_first;
         readme_first    += 1ULL<<i;
     }
+    // initialize LAry builddir (atf_norm.FDb.builddir)
+    _db.builddir_n = 0;
+    memset(_db.builddir_lary, 0, sizeof(_db.builddir_lary)); // zero out all level pointers
+    atf_norm::FBuilddir* builddir_first = (atf_norm::FBuilddir*)algo_lib::malloc_AllocMem(sizeof(atf_norm::FBuilddir) * (u64(1)<<4));
+    if (!builddir_first) {
+        FatalErrorExit("out of memory");
+    }
+    for (int i = 0; i < 4; i++) {
+        _db.builddir_lary[i]  = builddir_first;
+        builddir_first    += 1ULL<<i;
+    }
+    // initialize LAry cfg (atf_norm.FDb.cfg)
+    _db.cfg_n = 0;
+    memset(_db.cfg_lary, 0, sizeof(_db.cfg_lary)); // zero out all level pointers
+    atf_norm::FCfg* cfg_first = (atf_norm::FCfg*)algo_lib::malloc_AllocMem(sizeof(atf_norm::FCfg) * (u64(1)<<4));
+    if (!cfg_first) {
+        FatalErrorExit("out of memory");
+    }
+    for (int i = 0; i < 4; i++) {
+        _db.cfg_lary[i]  = cfg_first;
+        cfg_first    += 1ULL<<i;
+    }
+    // initialize hash table for atf_norm::FBuilddir;
+    _db.ind_builddir_n             	= 0; // (atf_norm.FDb.ind_builddir)
+    _db.ind_builddir_buckets_n     	= 4; // (atf_norm.FDb.ind_builddir)
+    _db.ind_builddir_buckets_elems 	= (atf_norm::FBuilddir**)algo_lib::malloc_AllocMem(sizeof(atf_norm::FBuilddir*)*_db.ind_builddir_buckets_n); // initial buckets (atf_norm.FDb.ind_builddir)
+    if (!_db.ind_builddir_buckets_elems) {
+        FatalErrorExit("out of memory"); // (atf_norm.FDb.ind_builddir)
+    }
+    memset(_db.ind_builddir_buckets_elems, 0, sizeof(atf_norm::FBuilddir*)*_db.ind_builddir_buckets_n); // (atf_norm.FDb.ind_builddir)
 
     atf_norm::InitReflection();
     normcheck_LoadStatic();
@@ -1205,6 +1634,15 @@ void atf_norm::FDb_Init() {
 // --- atf_norm.FDb..Uninit
 void atf_norm::FDb_Uninit() {
     atf_norm::FDb &row = _db; (void)row;
+
+    // atf_norm.FDb.ind_builddir.Uninit (Thash)  //
+    // skip destruction of ind_builddir in global scope
+
+    // atf_norm.FDb.cfg.Uninit (Lary)  //
+    // skip destruction in global scope
+
+    // atf_norm.FDb.builddir.Uninit (Lary)  //
+    // skip destruction in global scope
 
     // atf_norm.FDb.readme.Uninit (Lary)  //
     // skip destruction in global scope
@@ -1422,6 +1860,8 @@ void atf_norm::FieldId_Print(atf_norm::FieldId & row, algo::cstring &str) {
 const char* atf_norm::value_ToCstr(const atf_norm::TableId& parent) {
     const char *ret = NULL;
     switch(value_GetEnum(parent)) {
+        case atf_norm_TableId_dev_Builddir : ret = "dev.Builddir";  break;
+        case atf_norm_TableId_dev_Cfg      : ret = "dev.Cfg";  break;
         case atf_norm_TableId_dmmeta_Ns    : ret = "dmmeta.Ns";  break;
         case atf_norm_TableId_dev_Readme   : ret = "dev.Readme";  break;
         case atf_norm_TableId_dev_Scriptfile: ret = "dev.Scriptfile";  break;
@@ -1449,6 +1889,17 @@ void atf_norm::value_Print(const atf_norm::TableId& parent, algo::cstring &lhs) 
 bool atf_norm::value_SetStrptrMaybe(atf_norm::TableId& parent, algo::strptr rhs) {
     bool ret = false;
     switch (elems_N(rhs)) {
+        case 7: {
+            switch (u64(ReadLE32(rhs.elems))|(u64(ReadLE16(rhs.elems+4))<<32)|(u64(rhs[6])<<48)) {
+                case LE_STR7('d','e','v','.','C','f','g'): {
+                    value_SetEnum(parent,atf_norm_TableId_dev_Cfg); ret = true; break;
+                }
+                case LE_STR7('d','e','v','.','c','f','g'): {
+                    value_SetEnum(parent,atf_norm_TableId_dev_cfg); ret = true; break;
+                }
+            }
+            break;
+        }
         case 9: {
             switch (ReadLE64(rhs.elems)) {
                 case LE_STR8('d','m','m','e','t','a','.','N'): {
@@ -1470,6 +1921,19 @@ bool atf_norm::value_SetStrptrMaybe(atf_norm::TableId& parent, algo::strptr rhs)
                 }
                 case LE_STR8('d','e','v','.','r','e','a','d'): {
                     if (memcmp(rhs.elems+8,"me",2)==0) { value_SetEnum(parent,atf_norm_TableId_dev_readme); ret = true; break; }
+                    break;
+                }
+            }
+            break;
+        }
+        case 12: {
+            switch (ReadLE64(rhs.elems)) {
+                case LE_STR8('d','e','v','.','B','u','i','l'): {
+                    if (memcmp(rhs.elems+8,"ddir",4)==0) { value_SetEnum(parent,atf_norm_TableId_dev_Builddir); ret = true; break; }
+                    break;
+                }
+                case LE_STR8('d','e','v','.','b','u','i','l'): {
+                    if (memcmp(rhs.elems+8,"ddir",4)==0) { value_SetEnum(parent,atf_norm_TableId_dev_builddir); ret = true; break; }
                     break;
                 }
             }
@@ -1546,10 +2010,7 @@ int main(int argc, char **argv) {
         atf_norm::FDb_Init();
         algo_lib::_db.argc = argc;
         algo_lib::_db.argv = argv;
-        algo_lib::_db.epoll_fd = epoll_create(1);
-        if (algo_lib::_db.epoll_fd == -1) {
-            FatalErrorExit("epoll_create");
-        }
+        algo_lib::IohookInit();
         atf_norm::MainArgs(algo_lib::_db.argc,algo_lib::_db.argv); // dmmeta.main:atf_norm
     } catch(algo_lib::ErrorX &x) {
         prerr("atf_norm.error  " << x); // there may be additional hints in DetachBadTags

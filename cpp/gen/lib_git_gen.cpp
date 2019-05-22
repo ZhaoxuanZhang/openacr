@@ -16,13 +16,13 @@
 #include "include/gen/algo_lib_gen.inl.h"
 //#pragma endinclude
 namespace lib_git {
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-static void          SizeCheck();
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    static void          SizeCheck();
 } // end namespace lib_git
 
 // --- lib_git.trace..Print
@@ -33,34 +33,10 @@ void lib_git::trace_Print(lib_git::trace & row, algo::cstring &str) {
     (void)row;//only to avoid -Wunused-parameter
 }
 
-// --- lib_git.FDb._db.MainArgs
-// Main function
-void lib_git::MainArgs(int argc, char **argv) {
-    lib_git::Main(); // call through to user-defined main
-    (void)argc;//only to avoid -Wunused-parameter
-    (void)argv;//only to avoid -Wunused-parameter
-}
-
-// --- lib_git.FDb._db.MainLoop
-// Main loop.
-void lib_git::MainLoop() {
-    SchedTime time(get_cycles());
-    algo_lib::_db.clock          = time;
-    do {
-        algo_lib::_db.next_loop.value = algo_lib::_db.limit;
-        algo_lib::Step(); // dependent namespace specified via (dev.targdep)
-    } while (algo_lib::_db.next_loop < algo_lib::_db.limit);
-}
-
-// --- lib_git.FDb._db.Step
-// Main step
-void lib_git::Step() {
-}
-
 // --- lib_git.FDb._db.InitReflection
 // Load statically available data into tables, register tables and database.
 static void lib_git::InitReflection() {
-    algo_lib::imdb_InsertMaybe(algo::Imdb("lib_git", NULL, NULL, lib_git::MainLoop, NULL, algo::Comment()));
+    algo_lib::imdb_InsertMaybe(algo::Imdb("lib_git", NULL, NULL, NULL, NULL, algo::Comment()));
 
     algo::Imtable t_trace;
     t_trace.imtable         = "lib_git.trace";
@@ -110,7 +86,7 @@ bool lib_git::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- lib_git.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool lib_git::_db_XrefMaybe() {
     bool retval = true;
     return retval;

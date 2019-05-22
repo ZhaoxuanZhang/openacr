@@ -76,14 +76,14 @@ namespace algo {
     // -----------------------------------------------------------------------------
 
     template<class T>
-        struct Renew {
-            T &t;
+    struct Renew {
+        T &t;
         Renew(T &in_t) : t(in_t){
         }
-            ~Renew() {
-                new (&t)T;
-            }
-        };
+        ~Renew() {
+            new (&t)T;
+        }
+    };
 
     template<class T> inline void Refurbish(T &t) {
         Renew<T> r(t);
@@ -164,11 +164,7 @@ namespace algo { // update-hdr srcfile:'(%/algo/lib.%|include/algo.inl.h|include
     //
 
     // Execute unix command and return output.
-    // TODO: don't use popen. it creates an extra shell.
-    //
-    // todo: eval N commands and return N outputs.
-    //
-    tempstr SysEval(strptr cmd_, FailokQ fail_ok, int max_output, bool echo);
+    tempstr SysEval(strptr cmd, FailokQ fail_ok, int max_output, bool echo);
 
     // Execute unix command and return status code.
     // Exception is thrown if FAIL_OK is false, and subprocess does not exit normally.
@@ -212,8 +208,9 @@ namespace algo { // update-hdr srcfile:'(%/algo/lib.%|include/algo.inl.h|include
     // Where it works, ExpFast makes a steady relative error of about 2%.
     double ExpFast(double y);
 
-    // verbose version of mlockall
-    void LockAllMemory();
+    // lock all presently, and future allocated bytes in physical memory.
+    // Return success value. Errno provides more info.
+    bool LockAllMemory();
     void SetupExitSignals(bool sigint);
     const tempstr GetHostname();
     const tempstr GetDomainname();
@@ -257,20 +254,6 @@ namespace algo { // update-hdr srcfile:'(%/algo/lib.%|include/algo.inl.h|include
     template<class T> inline void ZeroBytes(T &t);
     template<class T, class U> inline T PtrAdd(U *ptr, int_ptr offset);
     template<class T> inline void TSwap(T &a, T &b);
-    inline THook<> Hook(void (*in_fcn)());
-    template<class Ctx> inline THook<> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx*));
-    template<class Ctx> inline THook<> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx&));
-    template<class Ctx,class B> inline THook<B> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx*,B));
-    template<class Ctx,class B> inline THook<B> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx&,B));
-    template<class Ctx,class B,class C> inline THook<B,C> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx*,B,C));
-    template<class Ctx,class B,class C> inline THook<B,C> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx&,B,C));
-    template<class Ctx,class B,class C, class D> inline THook<B,C,D> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx*,B,C,D));
-    template<class Ctx,class B,class C, class D> inline THook<B,C,D> Hook(Ctx *in_ctx, void (*in_fcn)(Ctx&,B,C,D));
-    inline void qCall(const THook<> &hook);
-    template<class B> inline void qCall(const THook<B> &hook, B arg1);
-    template<class B, class C> inline void qCall(const THook<B,C> &hook, B arg1, C arg2);
-    template<class B, class C, class D> inline void qCall(const THook<B,C,D> &hook, B arg1, C arg2, D arg3);
-    inline void NoOp();
 
     // Default, and invalid, value for Fildes is -1. 0 is a valid value (stdin)!
     inline bool ValidQ(Fildes fd);
@@ -372,6 +355,25 @@ namespace algo_lib { // update-hdr
     //     To convert this section to a hand-written section, remove the word 'update-hdr' from namespace line.
 
     // -------------------------------------------------------------------
+    // cpp/lib/algo/cpu_hz.cpp -- Grab cpu_hz from OS
+    //
+    void InitCpuHz();
+
+    // -------------------------------------------------------------------
+    // cpp/lib/algo/crc32.cpp -- Software-based CRC32
+    //
+
+    // This is a low-quality random number generator suitable for simple tasks...
+    // Set seed for srng state
+    void srng_SetSeed(algo_lib::Srng &srng, int z, int w);
+
+    // retrieve random u32
+    u32 srng_GetU32(algo_lib::Srng &srng);
+
+    // retrieve random double in 0..1 range
+    double srng_GetDouble(algo_lib::Srng &srng);
+
+    // -------------------------------------------------------------------
     // cpp/lib/algo/errtext.cpp
     //
     void SaveBadField(strptr name, strptr value);
@@ -410,6 +412,12 @@ namespace algo_lib { // update-hdr
     //
     void fildes_Cleanup(algo_lib::FLockfile &lockfile);
 
+    // Update FNAME to be a filename that can be passed to Unix exec call.
+    // If FNAME is an absolute path, do nothing
+    // If FNAME is a relative path, perform a search using the PATH environment
+    // variable; upon finding a matching path, set FNAME to the filename found.
+    void ResolveExecFname(cstring &fname);
+
     // -------------------------------------------------------------------
     // cpp/lib/algo/fmt.cpp -- Print to string / Read from string
     //
@@ -419,15 +427,26 @@ namespace algo_lib { // update-hdr
     // -------------------------------------------------------------------
     // cpp/lib/algo/iohook.cpp
     //
+    void IohookInit();
 
     // Register IOHOOK to be called whenever an IO operation is possible.
     // OK to add an fd twice with different flags. Subsequent calls override previous ones.
     // Add iohook to epoll in read, write or read/write mode
     // Optionally, add as edge triggered
-    void IoHookAdd(algo_lib::FIohook& iohook, algo::IOEvtFlags inflags) __attribute__((nothrow));
+    void IohookAdd(algo_lib::FIohook& iohook, algo::IOEvtFlags inflags) __attribute__((nothrow));
 
-    // Remove iohook from epoll
-    void IoHookRemove(algo_lib::FIohook& iohook) __attribute__((nothrow));
+    // De-register interest in iohook
+    void IohookRemove(algo_lib::FIohook& iohook) __attribute__((nothrow));
+
+    // give up unused time to the OS.
+    // Compute number of clocks to sleep before next scheduling cycle
+    // If there was no sleep on the previous cycle, the sleep is zero.
+    // This last bit is important because it prevents deadlocks
+    // when one step implicitly creates work for another step
+    // that occurs before it in the main loop.
+    // Sleep will not extend beyond algo_lib::_db.limit
+    //     (user-implemented function, prototype is in amc-generated header)
+    // void giveup_time_Step();
 
     // -------------------------------------------------------------------
     // cpp/lib/algo/lib.cpp -- Main file
@@ -439,9 +458,6 @@ namespace algo_lib { // update-hdr
     void fildes_Cleanup(algo_lib::FIohook &iohook);
     //     (user-implemented function, prototype is in amc-generated header)
     // void bh_timehook_Step();
-
-    // give up unused time to the OS.
-    // void giveup_time_Step();
 
     // Check signature on incoming data
     bool dispsigcheck_InputMaybe(dmmeta::Dispsigcheck &dispsigcheck);
@@ -562,20 +578,6 @@ namespace algo_lib { // update-hdr
     bool MmapFile_Load(MmapFile &mmapfile, strptr fname);
 
     // -------------------------------------------------------------------
-    // cpp/lib/algo/rand.cpp
-    //
-
-    // This is a low-quality random number generator suitable for simple tasks...
-    // Set seed for srng state
-    void srng_SetSeed(algo_lib::Srng &srng, int z, int w);
-
-    // retrieve random u32
-    u32 srng_GetU32(algo_lib::Srng &srng);
-
-    // retrieve random double in 0..1 range
-    double srng_GetDouble(algo_lib::Srng &srng);
-
-    // -------------------------------------------------------------------
     // cpp/lib/algo/regx.cpp -- Sql Regx implementation
     //
     void Regx_Print(algo_lib::Regx &regx, cstring &lhs);
@@ -650,11 +652,16 @@ namespace algo_lib { // update-hdr
     // cpp/lib/algo/timehook.cpp
     //
 
-    // Initialize TH and associate it with SCOPE.
-    // When SCOPE exits, TH will be descheduled.
-    // If an exception occurs in hook's callback, it will be passed to SCOPe.
-    void ThInit(algo_lib::FTimehook& th, algo::THook<> hook, algo::SchedTime delay) __attribute__((nothrow));
-    void ThInitRecur(algo_lib::FTimehook& th, algo::THook<> hook, algo::SchedTime delay) __attribute__((nothrow));
+    // Initialize time hook TH as non-recurrent, with delay DELAY.
+    // Usage:
+    // ThInit(th, SchedTime());     // schedule at current time
+    // hook_Set0(th, myfunction);   // set callback
+    // bh_timehook_Reheap(th);      // insert into timehook heap
+    // ... eventually algo_lib::Step() will call the hook
+    void ThInit(algo_lib::FTimehook& th, algo::SchedTime delay) __attribute__((nothrow));
+
+    // Similar to the above, but recurrent.
+    void ThInitRecur(algo_lib::FTimehook& th, algo::SchedTime delay) __attribute__((nothrow));
 
     // -------------------------------------------------------------------
     // cpp/lib/algo/txttbl.cpp -- Ascii table

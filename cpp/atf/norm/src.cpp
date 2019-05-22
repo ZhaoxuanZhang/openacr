@@ -15,7 +15,7 @@
 //
 // Contacting ICE: <https://www.theice.com/contact>
 //
-// Target: atf_norm (exe) -- Run normalization tests (see normcheck table)
+// Target: atf_norm (exe) -- Normalization tests (see normcheck table)
 // Exceptions: yes
 // Source: cpp/atf/norm/src.cpp -- source file (cpp/, include/) normalizations including amc
 //
@@ -31,11 +31,11 @@
 void atf_norm::normcheck_indent_srcfile() {
     // indent recently modified source files
     SysCmd("for X in $(git diff-tree --name-only  HEAD -r --no-commit-id cpp include"
-           " | egrep -v '(cpp/gen/|include/gen|extern/|include/vma)'); do if [ -f $X ]; then echo $X; fi; done "
+           " | egrep -v '(cpp/gen/|include/gen|extern/)'); do if [ -f $X ]; then echo $X; fi; done "
            "> temp/atf_norm_indent.list",FailokQ(true));
-    SysCmd("echo -n indenting files:;"
+    SysCmd("printf %s 'indenting files:';"
            " for X in $(head temp/atf_norm_indent.list); do"
-           " echo -n ' ' $X; done; echo ...",FailokQ(false));
+           " printf '%c %s' ' ' $X; done; echo ...",FailokQ(false));
     SysCmd("bin/cpp-indent $(cat temp/atf_norm_indent.list) > temp/atf_norm_indent.log 2>&1",FailokQ(false));
     CheckCleanDirs("cpp include");
 }
@@ -124,53 +124,28 @@ void atf_norm::normcheck_stray_gen() {
     GenCheck("cpp/gen");
 }
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-// History of SKNF -> [History of SKNF](history-of-sknf)
-static tempstr TocLink(strptr str) {
-    tempstr ret;
-    ret << "[" << str << "](#";
-    tempstr lc;
-    lc << str;
-    MakeLower(lc);
-    for (u32 i=0; i < lc.ch_n; i++) {
-        if (!algo_lib::IdentCharQ(lc.ch_elems[i])) {
-            lc.ch_elems[i] = '-';
-        }
+static void BuildWith(strptr compiler) {
+    if (SysEval(tempstr() << compiler << " --version",FailokQ(true),1024*10) != "") {
+        command::abt_proc abt;
+        abt.cmd.compiler = compiler;
+        abt.cmd.cfg = dev_Cfg_cfg_release;
+        abt.cmd.target.expr = "%";
+        abt_ExecX(abt);
+    } else {
+        prlog("# "<<compiler<<" not installed, skipping build");
     }
-    Replace(lc,"--","-");
-    ret << lc << ")";
-    return ret;
 }
 
-// Scan string FROM for markdown header indicators
-// (==, ===, ==== etc)
-// And add them as sections to the table of contents, with 3 spaces per level
-static void AppendToc(strptr from, cstring &to) {
-    ind_beg(Line_curs,line,from) {
-        int i=0;
-        while (i<line.n_elems && line[i]=='#') {
-            i++;
-        }
-        if (i>1 && i<line.n_elems && line[i]==' ') {
-            char_PrintNTimes(' ',to,(i-1)*3);
-            to << "* " << TocLink(RestFrom(line,i+1)) << eol;
-        }
-    }ind_end;
+// -----------------------------------------------------------------------------
+
+void atf_norm::normcheck_build_clang() {
+    BuildWith(dev_Compiler_compiler_clangPP);
 }
 
-void atf_norm::normcheck_readme() {
-    // Create a README
-    cstring text;
-    cstring out;
-    out << "This file was created with 'atf_norm readme' from txt/*.md -- *do not edit*\n\n";
-    out << "## Table Of Contents\n";
-    ind_beg(_db_readme_curs,readme,_db) {
-        text << eol;
-        text << FileToString(readme.gitfile);
-    }ind_end;
-    AppendToc(text,out);
-    out << eol;
-    out << text;
-    StringToFile(out, "README.md");
+// -----------------------------------------------------------------------------
+
+void atf_norm::normcheck_build_gcc9() {
+    BuildWith(dev_Compiler_compiler_gPP_9);
 }

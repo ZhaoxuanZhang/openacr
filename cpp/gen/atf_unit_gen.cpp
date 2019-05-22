@@ -42,7 +42,7 @@ atf_unit::FDb   atf_unit::_db;    // dependency found via dev.targdep
 
 namespace atf_unit {
 const char *atf_unit_help =
-"atf_unit: Algo Test Framework: unit tests\n"
+"atf_unit: Unit tests (see unittest table)\n"
 "Usage: atf_unit [options]\n"
 "    [unittest]        string  SQL regex, selecting test to run. default: \"%\"\n"
 "    -nofork                   Do not fork for destructive tests. default: false\n"
@@ -70,39 +70,39 @@ const char *atf_unit_syntax =
 ;
 } // namespace atf_unit
 namespace atf_unit {
-// Extract next character from STR and advance IDX
-static int           val_Nextchar(const atf_unit::Cstr& parent, strptr &str, int &idx) __attribute__((nothrow));
-// Returns the child that has greater height.
-static atf_unit::FNumber* tr_number_TallerChild(atf_unit::FNumber& node) __attribute__((nothrow));
-// Disconnects the subtree(branch) from the parent
-static void          tr_number_Disconnect(atf_unit::FNumber& node) __attribute__((nothrow));
-static bool          tr_number_ElemLt(atf_unit::FNumber &a, atf_unit::FNumber &b) __attribute__((nothrow));
-static void          tr_number_updateDepth(atf_unit::FNumber& node) __attribute__((nothrow));
-// rotates the tree in from->to direction
-static void          tr_number_Turn(atf_unit::FNumber& from, atf_unit::FNumber& to) __attribute__((nothrow));
-static void          tr_number_Connect(atf_unit::FNumber* parent, atf_unit::FNumber* child, bool left) __attribute__((nothrow));
-static void          unittest_LoadStatic() __attribute__((nothrow));
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-// Swap values elem_a and elem_b
-static void          sorted_Swap(atf_unit::Dbl &elem_a, atf_unit::Dbl &elem_b) __attribute__((nothrow));
-// Left circular shift of three-tuple
-static void          sorted_Rotleft(atf_unit::Dbl &elem_a, atf_unit::Dbl &elem_b, atf_unit::Dbl &elem_c) __attribute__((nothrow));
-// Compare values elem_a and elem_b
-// The comparison function must be anti-symmetric: if a>b, then !(b>a).
-// If not, mayhem results.
-static bool          sorted_Lt(atf_unit::Dbl elem_a, atf_unit::Dbl elem_b) __attribute__((nothrow));
-// Internal insertion sort
-static void          sorted_IntInsertionSort(atf_unit::Dbl *elems, int n) __attribute__((nothrow));
-// Internal heap sort
-static void          sorted_IntHeapSort(atf_unit::Dbl *elems, int n) __attribute__((nothrow));
-// Quick sort engine
-static void          sorted_IntQuickSort(atf_unit::Dbl *elems, int n, int depth) __attribute__((nothrow));
-static void          SizeCheck();
+    // Extract next character from STR and advance IDX
+    static int           val_Nextchar(const atf_unit::Cstr& parent, strptr &str, int &idx) __attribute__((nothrow));
+    // Returns the child that has greater height.
+    static atf_unit::FNumber* tr_number_TallerChild(atf_unit::FNumber& node) __attribute__((nothrow));
+    // Disconnects the subtree(branch) from the parent
+    static void          tr_number_Disconnect(atf_unit::FNumber& node) __attribute__((nothrow));
+    static bool          tr_number_ElemLt(atf_unit::FNumber &a, atf_unit::FNumber &b) __attribute__((nothrow));
+    static void          tr_number_updateDepth(atf_unit::FNumber& node) __attribute__((nothrow));
+    // rotates the tree in from->to direction
+    static void          tr_number_Turn(atf_unit::FNumber& from, atf_unit::FNumber& to) __attribute__((nothrow));
+    static void          tr_number_Connect(atf_unit::FNumber* parent, atf_unit::FNumber* child, bool left) __attribute__((nothrow));
+    static void          unittest_LoadStatic() __attribute__((nothrow));
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    // Swap values elem_a and elem_b
+    static void          sorted_Swap(atf_unit::Dbl &elem_a, atf_unit::Dbl &elem_b) __attribute__((nothrow));
+    // Left circular shift of three-tuple
+    static void          sorted_Rotleft(atf_unit::Dbl &elem_a, atf_unit::Dbl &elem_b, atf_unit::Dbl &elem_c) __attribute__((nothrow));
+    // Compare values elem_a and elem_b
+    // The comparison function must be anti-symmetric: if a>b, then !(b>a).
+    // If not, mayhem results.
+    static bool          sorted_Lt(atf_unit::Dbl elem_a, atf_unit::Dbl elem_b) __attribute__((nothrow));
+    // Internal insertion sort
+    static void          sorted_IntInsertionSort(atf_unit::Dbl *elems, int n) __attribute__((nothrow));
+    // Internal heap sort
+    static void          sorted_IntHeapSort(atf_unit::Dbl *elems, int n) __attribute__((nothrow));
+    // Quick sort engine
+    static void          sorted_IntQuickSort(atf_unit::Dbl *elems, int n, int depth) __attribute__((nothrow));
+    static void          SizeCheck();
 } // end namespace atf_unit
 
 // --- atf_unit.Cstr.val.Nextchar
@@ -357,7 +357,7 @@ u64 atf_unit::number_ReserveMem(u64 size) {
 
 // --- atf_unit.FDb.number.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_unit::number_XrefMaybe(atf_unit::FNumber &row) {
     bool retval = true;
     (void)row;
@@ -575,7 +575,7 @@ static void atf_unit::tr_number_Turn(atf_unit::FNumber& from, atf_unit::FNumber&
 // --- atf_unit.FDb.tr_number.Connect
 inline static void atf_unit::tr_number_Connect(atf_unit::FNumber* parent, atf_unit::FNumber* child, bool left) {
     if(parent){
-        (&parent->tr_number_left)[!left] = child;
+        (left ? parent->tr_number_left : parent->tr_number_right) = child;
     }
     if(child){
         child->tr_number_up = parent;
@@ -781,12 +781,7 @@ static void atf_unit::unittest_LoadStatic() {
         ,{ "atfdb.unittest  unittest:algo_lib.OrderID  comment:\"\"", atf_unit::unittest_algo_lib_OrderID }
         ,{ "atfdb.unittest  unittest:algo_lib.ParseHex1  comment:\"\"", atf_unit::unittest_algo_lib_ParseHex1 }
         ,{ "atfdb.unittest  unittest:algo_lib.ParseHex2  comment:\"\"", atf_unit::unittest_algo_lib_ParseHex2 }
-        ,{ "atfdb.unittest  unittest:algo_lib.ParseNum  comment:\"\"", atf_unit::unittest_algo_lib_ParseNum }
         ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber  comment:\"\"", atf_unit::unittest_algo_lib_ParseNumber }
-        ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber_Empty1  comment:\"zero length should result in OK = false\"", atf_unit::unittest_algo_lib_ParseNumber_Empty1 }
-        ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber_Empty2  comment:\"zero length should result in OK = false\"", atf_unit::unittest_algo_lib_ParseNumber_Empty2 }
-        ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber_Empty3  comment:\"zero length should result in OK = false\"", atf_unit::unittest_algo_lib_ParseNumber_Empty3 }
-        ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber_Empty4  comment:\"zero length should result in OK = false\"", atf_unit::unittest_algo_lib_ParseNumber_Empty4 }
         ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber_Overflow1  comment:\"Test for LnumU32Str7Base36 overflow\"", atf_unit::unittest_algo_lib_ParseNumber_Overflow1 }
         ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber_Overflow2  comment:\"Test for LnumU64Str20 overflow\"", atf_unit::unittest_algo_lib_ParseNumber_Overflow2 }
         ,{ "atfdb.unittest  unittest:algo_lib.ParseNumber_Overflow3  comment:\"Test for LnumU64Str22 overflow\"", atf_unit::unittest_algo_lib_ParseNumber_Overflow3 }
@@ -804,18 +799,12 @@ static void atf_unit::unittest_LoadStatic() {
         ,{ "atfdb.unittest  unittest:algo_lib.PopCnt2  comment:\"\"", atf_unit::unittest_algo_lib_PopCnt2 }
         ,{ "atfdb.unittest  unittest:algo_lib.PrintBash  comment:\"\"", atf_unit::unittest_algo_lib_PrintBash }
         ,{ "atfdb.unittest  unittest:algo_lib.PrintCppQuoted  comment:\"\"", atf_unit::unittest_algo_lib_PrintCppQuoted }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas1  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas1 }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas2  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas2 }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas3  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas3 }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas4  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas4 }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas5  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas5 }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas6  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas6 }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas7  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas7 }
-        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas8  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas8 }
+        ,{ "atfdb.unittest  unittest:algo_lib.PrintDoubleWithCommas  comment:\"\"", atf_unit::unittest_algo_lib_PrintDoubleWithCommas }
         ,{ "atfdb.unittest  unittest:algo_lib.PrintHex  comment:\"\"", atf_unit::unittest_algo_lib_PrintHex }
         ,{ "atfdb.unittest  unittest:algo_lib.PrintPad  comment:\"\"", atf_unit::unittest_algo_lib_PrintPad }
         ,{ "atfdb.unittest  unittest:algo_lib.PrintSsim  comment:\"\"", atf_unit::unittest_algo_lib_PrintSsim }
         ,{ "atfdb.unittest  unittest:algo_lib.PrintTime  comment:\"\"", atf_unit::unittest_algo_lib_PrintTime }
+        ,{ "atfdb.unittest  unittest:algo_lib.PrintWithCommas  comment:\"\"", atf_unit::unittest_algo_lib_PrintWithCommas }
         ,{ "atfdb.unittest  unittest:algo_lib.ReadLine  comment:\"\"", atf_unit::unittest_algo_lib_ReadLine }
         ,{ "atfdb.unittest  unittest:algo_lib.ReadModuleId  comment:\"\"", atf_unit::unittest_algo_lib_ReadModuleId }
         ,{ "atfdb.unittest  unittest:algo_lib.Regx  comment:\"\"", atf_unit::unittest_algo_lib_Regx }
@@ -838,6 +827,7 @@ static void atf_unit::unittest_LoadStatic() {
         ,{ "atfdb.unittest  unittest:algo_lib.StringSubrange  comment:\"\"", atf_unit::unittest_algo_lib_StringSubrange }
         ,{ "atfdb.unittest  unittest:algo_lib.StringToFile  comment:\"\"", atf_unit::unittest_algo_lib_StringToFile }
         ,{ "atfdb.unittest  unittest:algo_lib.SubstringIndex  comment:\"\"", atf_unit::unittest_algo_lib_SubstringIndex }
+        ,{ "atfdb.unittest  unittest:algo_lib.SysEval  comment:\"\"", atf_unit::unittest_algo_lib_SysEval }
         ,{ "atfdb.unittest  unittest:algo_lib.Tabulate  comment:\"\"", atf_unit::unittest_algo_lib_Tabulate }
         ,{ "atfdb.unittest  unittest:algo_lib.Tempfile  comment:\"\"", atf_unit::unittest_algo_lib_Tempfile }
         ,{ "atfdb.unittest  unittest:algo_lib.TestBitSet  comment:\"Bitset over Tary\"", atf_unit::unittest_algo_lib_TestBitSet }
@@ -851,6 +841,7 @@ static void atf_unit::unittest_LoadStatic() {
         ,{ "atfdb.unittest  unittest:algo_lib.TestStringFmt3  comment:\"Print 128-bit number: huge number\"", atf_unit::unittest_algo_lib_TestStringFmt3 }
         ,{ "atfdb.unittest  unittest:algo_lib.TimeConstants  comment:\"\"", atf_unit::unittest_algo_lib_TimeConstants }
         ,{ "atfdb.unittest  unittest:algo_lib.TimeConversion  comment:\"\"", atf_unit::unittest_algo_lib_TimeConversion }
+        ,{ "atfdb.unittest  unittest:algo_lib.TrimZerosRight  comment:\"\"", atf_unit::unittest_algo_lib_TrimZerosRight }
         ,{ "atfdb.unittest  unittest:algo_lib.Tuple  comment:\"\"", atf_unit::unittest_algo_lib_Tuple }
         ,{ "atfdb.unittest  unittest:algo_lib.Tuple1  comment:\"\"", atf_unit::unittest_algo_lib_Tuple1 }
         ,{ "atfdb.unittest  unittest:algo_lib.Tuple2  comment:\"\"", atf_unit::unittest_algo_lib_Tuple2 }
@@ -986,7 +977,7 @@ static void atf_unit::unittest_LoadStatic() {
 
 // --- atf_unit.FDb.unittest.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_unit::unittest_XrefMaybe(atf_unit::FUnittest &row) {
     bool retval = true;
     (void)row;
@@ -1083,7 +1074,7 @@ bool atf_unit::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- atf_unit.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_unit::_db_XrefMaybe() {
     bool retval = true;
     return retval;
@@ -1399,7 +1390,7 @@ void atf_unit::testrun_RemoveLast() {
 
 // --- atf_unit.FDb.testrun.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_unit::testrun_XrefMaybe(atf_unit::FTestrun &row) {
     bool retval = true;
     (void)row;
@@ -1517,7 +1508,7 @@ void atf_unit::acr_ed_ExecX() {
 // Call execv()
 // Call execv with specified parameters -- cprint:acr_ed.Argv
 int atf_unit::acr_ed_Execv() {
-    char *argv[40+2]; // start of first arg (future pointer)
+    char *argv[41+2]; // start of first arg (future pointer)
     algo::tempstr temp;
     int n_argv=0;
     argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
@@ -1748,6 +1739,13 @@ int atf_unit::acr_ed_Execv() {
         ch_Alloc(temp) = 0;// NUL term for this arg
     }
 
+    if (_db.acr_ed_cmd.normcheck != "") {
+        argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
+        temp << "-normcheck:";
+        cstring_Print(_db.acr_ed_cmd.normcheck, temp);
+        ch_Alloc(temp) = 0;// NUL term for this arg
+    }
+
     if (_db.acr_ed_cmd.cppfunc != "") {
         argv[n_argv++] = (char*)(int_ptr)ch_N(temp);// future pointer
         temp << "-cppfunc:";
@@ -1812,6 +1810,8 @@ int atf_unit::acr_ed_Execv() {
     while (n_argv>0) { // shift pointers
         argv[--n_argv] += (u64)temp.ch_elems;
     }
+    // if _db.acr_ed_path is relative, search for it in PATH
+    algo_lib::ResolveExecFname(_db.acr_ed_path);
     return execv(Zeroterm(_db.acr_ed_path),argv);
 }
 
@@ -2018,7 +2018,7 @@ void atf_unit::orig_Setary(atf_unit::FPerfSort& parent, atf_unit::FPerfSort &rhs
 
 // --- atf_unit.FPerfSort.orig.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_unit::orig_XrefMaybe(atf_unit::Dbl &row) {
     bool retval = true;
     (void)row;
@@ -2756,7 +2756,7 @@ void atf_unit::shstream_AbsReserve(atf_unit::ShStreamAry& parent, int n) {
 
 // --- atf_unit.ShStreamAry.shstream.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool atf_unit::shstream_XrefMaybe(atf_unit::ShStream &row) {
     bool retval = true;
     (void)row;
@@ -3078,10 +3078,7 @@ int main(int argc, char **argv) {
         atf_unit::FDb_Init();
         algo_lib::_db.argc = argc;
         algo_lib::_db.argv = argv;
-        algo_lib::_db.epoll_fd = epoll_create(1);
-        if (algo_lib::_db.epoll_fd == -1) {
-            FatalErrorExit("epoll_create");
-        }
+        algo_lib::IohookInit();
         atf_unit::MainArgs(algo_lib::_db.argc,algo_lib::_db.argv); // dmmeta.main:atf_unit
     } catch(algo_lib::ErrorX &x) {
         prerr("atf_unit.error  " << x); // there may be additional hints in DetachBadTags

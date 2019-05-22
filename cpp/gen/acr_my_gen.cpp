@@ -29,30 +29,31 @@ acr_my::FDb     acr_my::_db;      // dependency found via dev.targdep
 
 namespace acr_my {
 const char *acr_my_help =
+"acr_my: ACR <-> MariaDB adaptor\n"
 "Usage: acr_my [options]\n"
-"    [nsdb]       string  Regx of ssim namespace (dmmeta.nsdb) to select\n"
-"    -in          string  Input directory or filename, - for stdin. default: \"data\"\n"
-"    -schema_dir  string  Input directory or filename, - for stdin. default: \"data\"\n"
-"    -fldfunc             Evaluate fldfunc when printing tuple. default: false\n"
-"    -fkey                Enable foreign key constraints. default: false\n"
-"    -e                   Alias for -start -shell -stop. default: false\n"
-"    -start               Start local mysql server. default: false\n"
-"    -stop                Stop local mysql server, saving data. default: false\n"
-"    -abort               Abort local mysql server, losing data. default: false\n"
-"    -shell               Connect to local mysql server. default: false\n"
-"    -serv                Start mysql with TCP/IP service enabled. default: false\n"
-"    -verbose             Enable verbose mode\n"
-"    -debug               Enable debug mode\n"
-"    -version             Show version information\n"
-"    -sig                 Print SHA1 signatures for dispatches\n"
-"    -help                Print this screen and exit\n"
+"    [nsdb]    string  Regx of ssim namespace (dmmeta.nsdb) to select\n"
+"    -in       string  Input directory or filename, - for stdin. default: \"data\"\n"
+"    -schema   string  Input directory or filename, - for stdin. default: \"data\"\n"
+"    -fldfunc          Evaluate fldfunc when printing tuple. default: false\n"
+"    -fkey             Enable foreign key constraints. default: false\n"
+"    -e                Alias for -start -shell -stop. default: false\n"
+"    -start            Start local mysql server. default: false\n"
+"    -stop             Stop local mysql server, saving data. default: false\n"
+"    -abort            Abort local mysql server, losing data. default: false\n"
+"    -shell            Connect to local mysql server. default: false\n"
+"    -serv             Start mysql with TCP/IP service enabled. default: false\n"
+"    -verbose          Enable verbose mode\n"
+"    -debug            Enable debug mode\n"
+"    -version          Show version information\n"
+"    -sig              Print SHA1 signatures for dispatches\n"
+"    -help             Print this screen and exit\n"
 ;
 
 
 const char *acr_my_syntax =
 "[nsdb]:string=\n"
 " -in:string=\"data\"\n"
-" -schema_dir:string=\"data\"\n"
+" -schema:string=\"data\"\n"
 " -fldfunc:flag\n"
 " -fkey:flag\n"
 " -e:flag\n"
@@ -64,15 +65,15 @@ const char *acr_my_syntax =
 ;
 } // namespace acr_my
 namespace acr_my {
-// Load statically available data into tables, register tables and database.
-static void          InitReflection();
-static bool          nsdb_InputMaybe(dmmeta::Nsdb &elem) __attribute__((nothrow));
-static bool          ssimfile_InputMaybe(dmmeta::Ssimfile &elem) __attribute__((nothrow));
-// find trace by row id (used to implement reflection)
-static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
-// Function return 1
-static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
-static void          SizeCheck();
+    // Load statically available data into tables, register tables and database.
+    static void          InitReflection();
+    static bool          nsdb_InputMaybe(dmmeta::Nsdb &elem) __attribute__((nothrow));
+    static bool          ssimfile_InputMaybe(dmmeta::Ssimfile &elem) __attribute__((nothrow));
+    // find trace by row id (used to implement reflection)
+    static algo::ImrowPtr trace_RowidFind(int t) __attribute__((nothrow));
+    // Function return 1
+    static i32           trace_N() __attribute__((__warn_unused_result__, nothrow, pure));
+    static void          SizeCheck();
 } // end namespace acr_my
 
 // --- acr_my.trace..Print
@@ -178,7 +179,7 @@ void acr_my::MainArgs(int argc, char **argv) {
     Argtuple argtuple;
     Argtuple_ReadArgv(argtuple, argc,argv,acr_my_syntax, acr_my_help);
     vrfy(acr_my_ReadTupleMaybe(acr_my::_db.cmdline, argtuple.tuple),"where:read_cmdline");
-    vrfy(acr_my::LoadTuplesMaybe(acr_my::_db.cmdline.schema_dir)
+    vrfy(acr_my::LoadTuplesMaybe(acr_my::_db.cmdline.schema)
     ,tempstr()<<"where:load_input  "<<algo_lib::DetachBadTags());
     acr_my::Main(); // call through to user-defined main
 }
@@ -277,7 +278,7 @@ bool acr_my::LoadSsimfileMaybe(algo::strptr fname) {
 
 // --- acr_my.FDb._db.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool acr_my::_db_XrefMaybe() {
     bool retval = true;
     return retval;
@@ -364,7 +365,7 @@ static bool acr_my::nsdb_InputMaybe(dmmeta::Nsdb &elem) {
 
 // --- acr_my.FDb.nsdb.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool acr_my::nsdb_XrefMaybe(acr_my::FNsdb &row) {
     bool retval = true;
     (void)row;
@@ -452,7 +453,7 @@ static bool acr_my::ssimfile_InputMaybe(dmmeta::Ssimfile &elem) {
 
 // --- acr_my.FDb.ssimfile.XrefMaybe
 // Insert row into all appropriate indices. If error occurs, store error
-// in algo_lib::_db.errtext and return false. Call Unref or Delete to cleanup partially inserted row.
+// in algo_lib::_db.errtext and return false. Caller must Delete or Unref such row.
 bool acr_my::ssimfile_XrefMaybe(acr_my::FSsimfile &row) {
     bool retval = true;
     (void)row;
@@ -743,10 +744,7 @@ int main(int argc, char **argv) {
         acr_my::FDb_Init();
         algo_lib::_db.argc = argc;
         algo_lib::_db.argv = argv;
-        algo_lib::_db.epoll_fd = epoll_create(1);
-        if (algo_lib::_db.epoll_fd == -1) {
-            FatalErrorExit("epoll_create");
-        }
+        algo_lib::IohookInit();
         acr_my::MainArgs(algo_lib::_db.argc,algo_lib::_db.argv); // dmmeta.main:acr_my
     } catch(algo_lib::ErrorX &x) {
         prerr("acr_my.error  " << x); // there may be additional hints in DetachBadTags

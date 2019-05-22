@@ -25,6 +25,18 @@
 
 #pragma once
 
+// -----------------------------------------------------------------------------
+
+// get CPU HZ value as u64
+inline u64 algo::get_cpu_hz_int() {
+    return algo_lib::_db.cpu_hz;
+}
+
+// get CPU HZ value as double
+inline double algo::get_cpu_hz() {
+    return algo_lib::_db.hz;
+}
+
 // cpu_hz (untyped SchedTime)
 // use this for timestamps.
 // these calls may be pipelined and reordered, so measuring instruction
@@ -116,4 +128,16 @@ inline algo::SchedTime algo::CurrSchedTime() {
 // Elapsed time in seconds between two SchedTimes.
 inline double algo::ElapsedSecs(algo::SchedTime start, algo::SchedTime end) {
     return (end-start)/get_cpu_hz();
+}
+
+inline algo::TimeStruct::TimeStruct() {
+    ZeroBytes(static_cast<tm&>(*this));
+    tm_nsec = 0;
+    tm_neg = false;
+    tm_isdst = -1;
+}
+
+inline algo::TimeStruct::TimeStruct(const struct tm &t) : tm(t) {
+    tm_nsec = 0;
+    tm_neg = false;
 }

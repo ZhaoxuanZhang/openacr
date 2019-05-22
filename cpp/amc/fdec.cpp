@@ -35,14 +35,14 @@ void amc::tfunc_Dec_GetDouble() {
     amc::FField &field = *amc::_db.genfield.p_field;
 
     amc::FFdec &fdec = *field.c_fdec;
-    Set(R, "$todbl", tempstr() << PrintDouble(pow(10, -fdec.nplace), fdec.nplace));
+    Set(R, "$fromdbl", tempstr() << algo::I64Power10(fdec.nplace));
     Set(R, "$fldval", FieldvalExpr(field.p_ctype, field,"$pararg"));
 
     amc::FFunc& func = amc::CreateCurFunc();
     Ins(&R, func.ret  , "double",false);
     Ins(&R, func.proto, "$name_GetDouble($Parent)",false);
     Ins(&R, func.body, "double ret;");
-    Ins(&R, func.body, "ret = $fldval * $todbl;");
+    Ins(&R, func.body, "ret = $fldval / double($fromdbl);");
     Ins(&R, func.body, "return ret;");
 }
 
@@ -51,7 +51,7 @@ void amc::tfunc_Dec_GetInt() {
     amc::FField &field = *amc::_db.genfield.p_field;
 
     amc::FFdec &fdec = *field.c_fdec;
-    Set(R, "$scale", tempstr() << PrintDouble(pow(10, fdec.nplace), fdec.nplace));
+    Set(R, "$scale", tempstr() << algo::I64Power10(fdec.nplace));
     Set(R, "$fldval", FieldvalExpr(field.p_ctype, field,"$pararg"));
 
     amc::FFunc& func = amc::CreateCurFunc();
@@ -68,7 +68,7 @@ void amc::tfunc_Dec_GetScale() {
     amc::FField &field = *amc::_db.genfield.p_field;
 
     amc::FFdec &fdec = *field.c_fdec;
-    Set(R, "$scale", tempstr() << PrintDouble(pow(10, fdec.nplace), fdec.nplace));
+    Set(R, "$scale", tempstr() << algo::I64Power10(fdec.nplace));
     Set(R, "$Name", name_Get(*field.p_ctype));
 
     amc::FFunc& func = amc::CreateCurFunc();
@@ -83,17 +83,17 @@ void amc::tfunc_Dec_qSetDouble() {
     amc::FField &field = *amc::_db.genfield.p_field;
 
     amc::FFdec &fdec = *field.c_fdec;
-    Set(R, "$fromdbl", tempstr() << PrintDouble(pow(10, fdec.nplace), fdec.nplace));
+    Set(R, "$fromdbl", tempstr() << algo::I64Power10(fdec.nplace));
     Set(R, "$fldval", FieldvalExpr(field.p_ctype, field,"$pararg"));
 
     amc::FFunc& qsetdbl = amc::CreateCurFunc();
     qsetdbl.inl = true;
     Ins(&R, qsetdbl.comment, "Set value of field $name.");
-    Ins(&R, qsetdbl.comment, "Make sure truncation of a near-integer value does not occur.");
+    Ins(&R, qsetdbl.comment, "The value is rounded to the nearest integer.");
+    Ins(&R, qsetdbl.comment, "This ensures that truncation of a near-integer value does not occur.");
     Ins(&R, qsetdbl.comment, "Example: 1.3 cannot be represented exactly as a double, the actual");
     Ins(&R, qsetdbl.comment, "stored value will be 1.29999999. when we apply C truncation,");
     Ins(&R, qsetdbl.comment, "we want to end up with 1.3, not 1.2.");
-    Ins(&R, qsetdbl.comment, "If the new value overflows: do nothing in release, core dump in debug.");
     Ins(&R, qsetdbl.ret  , "void",false);
     Ins(&R, qsetdbl.proto, "$name_qSetDouble($Parent, double val)",false);
     Ins(&R, qsetdbl.body, "double intval = val * $fromdbl + (val > 0 ? 0.5 : -0.5);");
@@ -107,7 +107,7 @@ void amc::tfunc_Dec_SetDoubleMaybe() {
     amc::FField &field = *amc::_db.genfield.p_field;
 
     amc::FFdec &fdec = *field.c_fdec;
-    Set(R, "$fromdbl", tempstr() << PrintDouble(pow(10, fdec.nplace), fdec.nplace));
+    Set(R, "$fromdbl", tempstr() << algo::I64Power10(fdec.nplace));
     Set(R, "$ctype", field.arg);
 
     amc::FFunc& setdoublex = amc::CreateCurFunc();
